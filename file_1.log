@@ -1,0 +1,248 @@
+2023-02-03 13:59:53.612 | ERROR    | __main__:<module>:78 - An error has been caught in function '<module>', process 'MainProcess' (12380), thread 'MainThread' (7428):
+Traceback (most recent call last):
+
+> File "C:\Users\Бимба\PycharmProjects\scan_av_script\main.py", line 78, in <module>
+    spec_exc()
+    └ <function spec_exc at 0x0000021186689300>
+
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\main.py", line 76, in spec_exc
+    raise Exception('as')
+
+Exception: as
+2023-02-03 14:10:16.205 | ERROR    | __main__:<module>:78 - An error has been caught in function '<module>', process 'MainProcess' (10652), thread 'MainThread' (10676):
+Traceback (most recent call last):
+
+> File "C:\Users\Бимба\PycharmProjects\scan_av_script\main.py", line 78, in <module>
+    spec_exc()
+    └ <function spec_exc at 0x00000189DA339300>
+
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\main.py", line 76, in spec_exc
+    print(1 / 0)
+
+ZeroDivisionError: division by zero
+2023-02-03 14:58:42.930 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 14:58:42.930984
+2023-02-03 15:04:07.502 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 15:04:07.502410
+2023-02-03 15:09:33.101 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 15:09:33.101654
+2023-02-03 15:14:59.707 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 15:14:59.707158
+2023-02-03 15:20:25.997 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 15:20:25.996070
+2023-02-03 15:25:51.670 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 15:25:51.670255
+2023-02-03 15:31:16.872 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 15:31:16.872535
+2023-02-03 15:36:45.070 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 15:36:45.070379
+2023-02-03 15:42:10.023 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 15:42:10.023754
+2023-02-03 15:47:35.122 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 15:47:35.122855
+2023-02-03 15:53:00.146 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 15:53:00.146208
+2023-02-03 15:58:27.582 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 15:58:27.582484
+2023-02-03 16:03:54.456 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 16:03:54.456082
+2023-02-03 16:09:21.664 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 16:09:21.664758
+2023-02-03 16:14:49.676 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 16:14:49.676953
+2023-02-03 16:20:14.445 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 16:20:14.445593
+2023-02-03 16:25:41.582 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 16:25:41.582335
+2023-02-03 16:31:11.361 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 16:31:11.361695
+2023-02-03 16:36:37.885 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 16:36:37.885285
+2023-02-03 16:42:06.544 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 16:42:06.544475
+2023-02-03 16:47:33.020 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 16:47:33.020926
+2023-02-03 16:52:57.880 | INFO     | __main__:sell_speed:73 - Executed time:2023-02-03 16:52:57.880127
+2023-02-03 17:38:51.318 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 17:38:51.318468
+2023-02-03 17:44:18.564 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 17:44:18.564965
+2023-02-03 17:49:43.198 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 17:49:43.198127
+2023-02-03 17:55:07.892 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 17:55:07.892887
+2023-02-03 18:00:31.551 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 18:00:31.551012
+2023-02-03 18:05:55.279 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 18:05:55.279019
+2023-02-03 18:11:19.001 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 18:11:19.001611
+2023-02-03 18:16:42.700 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 18:16:42.700769
+2023-02-03 20:19:21.400 | ERROR    | schedule:run:661 - An error has been caught in function 'run', process 'MainProcess' (1980), thread 'MainThread' (956):
+Traceback (most recent call last):
+
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\urllib3\connection.py", line 174, in _new_conn
+    conn = connection.create_connection(
+           │          └ <function create_connection at 0x000001C5615FC540>
+           └ <module 'urllib3.util.connection' from 'C:\\Users\\Бимба\\PycharmProjects\\scan_av_script\\venv\\Lib\\site-packages\\urllib3\...
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\urllib3\util\connection.py", line 72, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               │      │           │     │     │       │      └ <SocketKind.SOCK_STREAM: 1>
+               │      │           │     │     │       └ <module 'socket' from 'C:\\Users\\Бимба\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\socket.py'>
+               │      │           │     │     └ <AddressFamily.AF_UNSPEC: 0>
+               │      │           │     └ 443
+               │      │           └ 'card.wb.ru'
+               │      └ <function getaddrinfo at 0x000001C56028DE40>
+               └ <module 'socket' from 'C:\\Users\\Бимба\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\socket.py'>
+  File "C:\Users\Бимба\AppData\Local\Programs\Python\Python311\Lib\socket.py", line 962, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               │       │           │     │     │       │     │      └ 0
+               │       │           │     │     │       │     └ 0
+               │       │           │     │     │       └ <SocketKind.SOCK_STREAM: 1>
+               │       │           │     │     └ <AddressFamily.AF_UNSPEC: 0>
+               │       │           │     └ 443
+               │       │           └ 'card.wb.ru'
+               │       └ <built-in function getaddrinfo>
+               └ <module '_socket' from 'C:\\Users\\Бимба\\AppData\\Local\\Programs\\Python\\Python311\\DLLs\\_socket.pyd'>
+
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\urllib3\connectionpool.py", line 703, in urlopen
+    httplib_response = self._make_request(
+                       │    └ <function HTTPConnectionPool._make_request at 0x000001C5616B49A0>
+                       └ <urllib3.connectionpool.HTTPSConnectionPool object at 0x000001C5621DC790>
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\urllib3\connectionpool.py", line 386, in _make_request
+    self._validate_conn(conn)
+    │    │              └ <urllib3.connection.HTTPSConnection object at 0x000001C56215D010>
+    │    └ <function HTTPSConnectionPool._validate_conn at 0x000001C5616B5080>
+    └ <urllib3.connectionpool.HTTPSConnectionPool object at 0x000001C5621DC790>
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\urllib3\connectionpool.py", line 1042, in _validate_conn
+    conn.connect()
+    │    └ <function HTTPSConnection.connect at 0x000001C561686480>
+    └ <urllib3.connection.HTTPSConnection object at 0x000001C56215D010>
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\urllib3\connection.py", line 358, in connect
+    self.sock = conn = self._new_conn()
+    │    │             │    └ <function HTTPConnection._new_conn at 0x000001C561685E40>
+    │    │             └ <urllib3.connection.HTTPSConnection object at 0x000001C56215D010>
+    │    └ None
+    └ <urllib3.connection.HTTPSConnection object at 0x000001C56215D010>
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\urllib3\connection.py", line 186, in _new_conn
+    raise NewConnectionError(
+          └ <class 'urllib3.exceptions.NewConnectionError'>
+
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPSConnection object at 0x000001C56215D010>: Failed to establish a new connection: [Errno 11001] getaddrinfo failed
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\requests\adapters.py", line 489, in send
+    resp = conn.urlopen(
+           │    └ <function HTTPConnectionPool.urlopen at 0x000001C5616B4C20>
+           └ <urllib3.connectionpool.HTTPSConnectionPool object at 0x000001C5621DC790>
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    retries = retries.increment(
+              │       └ <function Retry.increment at 0x000001C5615FEDE0>
+              └ Retry(total=0, connect=None, read=False, redirect=None, status=None)
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\urllib3\util\retry.py", line 592, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+          │             │      │    │        │             └ 'unknown'
+          │             │      │    │        └ <class 'urllib3.exceptions.ResponseError'>
+          │             │      │    └ NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x000001C56215D010>: Failed to establish a new connection: ...
+          │             │      └ '/cards/detail?spp=27&regions=64,58,83,4,38,80,33,70,82,86,30,69,22,66,31,40,1,48&pricemarginCoeff=1.0&reg=1&appType=1&emp=0&...
+          │             └ <urllib3.connectionpool.HTTPSConnectionPool object at 0x000001C5621DC790>
+          └ <class 'urllib3.exceptions.MaxRetryError'>
+
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='card.wb.ru', port=443): Max retries exceeded with url: /cards/detail?spp=27&regions=64,58,83,4,38,80,33,70,82,86,30,69,22,66,31,40,1,48&pricemarginCoeff=1.0&reg=1&appType=1&emp=0&locale=ru&lang=ru&curr=rub&couponsGeo=2,12,7,3,6,13,21&dest=-1113276,-79379,-1104258,-5818883&nm=43761079;70219741;70219741;48844253;41668349;43761079;41668349;48844253;41668349;44624275;43761079;48505951;48505951;29419532;29419532;44624275;70219741;67240679;54056124;29419530;30598506;29419530;29419531;111821934;29535553;48505951;67240679;15455324;29419530;54056124;49714076;30598508;44624275;67240679;48844253;29535553;40938960;29419532;54056124;111512342;40938960;30598507;111512342;41657972;29535553;15455324;41657972;29419531;40938960;49714076;41657972;29419531;111821934;111512342;116546792;15455324;111821934;49714076;116547557;30599690;30599691;25331983;25329167;25350128;25310214;30599689;25350128;25142630;41668349;49270242;25142630;25142630;17331618;31609933;31609933;31613459;25331983;25314782;31612474;25314782;25310214;139711427;139727589;139731468;139711427;139731468;139727589;139727589;139731468;139711427;138930715;139376183;138916198;139375462;139385177;139384958;138925575;139384958;139375462;138930715;139385177;139376183;138916198;138925575;139384958;138916198;138925575;138930715;139375462;139376183;139385177;139742331;139741328;139738254;139738254;139738254;139744148 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x000001C56215D010>: Failed to establish a new connection: [Errno 11001] getaddrinfo failed'))
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\main.py", line 99, in <module>
+    main()
+    └ <function main at 0x000001C561A198A0>
+
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\main.py", line 95, in main
+    schedule.run_pending()
+    │        └ <function run_pending at 0x000001C56185DDA0>
+    └ <module 'schedule' from 'C:\\Users\\Бимба\\PycharmProjects\\scan_av_script\\venv\\Lib\\site-packages\\schedule\\__init__.py'>
+
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\schedule\__init__.py", line 780, in run_pending
+    default_scheduler.run_pending()
+    │                 └ <function Scheduler.run_pending at 0x000001C56185C4A0>
+    └ <schedule.Scheduler object at 0x000001C561860550>
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\schedule\__init__.py", line 100, in run_pending
+    self._run_job(job)
+    │    │        └ Every 5 minutes do sell_speed() (last run: 2023-02-03 18:16:42, next run: 2023-02-03 18:21:42)
+    │    └ <function Scheduler._run_job at 0x000001C56185C860>
+    └ <schedule.Scheduler object at 0x000001C561860550>
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\schedule\__init__.py", line 172, in _run_job
+    ret = job.run()
+          │   └ <function Job.run at 0x000001C56185DB20>
+          └ Every 5 minutes do sell_speed() (last run: 2023-02-03 18:16:42, next run: 2023-02-03 18:21:42)
+> File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\schedule\__init__.py", line 661, in run
+    ret = self.job_func()
+          │    └ functools.partial(<function sell_speed at 0x000001C552497A60>)
+          └ Every 5 minutes do sell_speed() (last run: 2023-02-03 18:16:42, next run: 2023-02-03 18:21:42)
+
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\main.py", line 43, in sell_speed
+    qty_wh_arr = inserter()
+                 └ <function inserter at 0x000001C5604B72E0>
+
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\misc\inserter.py", line 31, in inserter
+    response = requests.get(string1)
+               │        │   └ 'https://card.wb.ru/cards/detail?spp=27&regions=64,58,83,4,38,80,33,70,82,86,30,69,22,66,31,40,1,48&pricemarginCoeff=1.0&reg=...
+               │        └ <function get at 0x000001C561808220>
+               └ <module 'requests' from 'C:\\Users\\Бимба\\PycharmProjects\\scan_av_script\\venv\\Lib\\site-packages\\requests\\__init__.py'>
+
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\requests\api.py", line 73, in get
+    return request("get", url, params=params, **kwargs)
+           │              │           │         └ {}
+           │              │           └ None
+           │              └ 'https://card.wb.ru/cards/detail?spp=27&regions=64,58,83,4,38,80,33,70,82,86,30,69,22,66,31,40,1,48&pricemarginCoeff=1.0&reg=...
+           └ <function request at 0x000001C5617FCE00>
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           │       │              │           │      └ {'params': None}
+           │       │              │           └ 'https://card.wb.ru/cards/detail?spp=27&regions=64,58,83,4,38,80,33,70,82,86,30,69,22,66,31,40,1,48&pricemarginCoeff=1.0&reg=...
+           │       │              └ 'get'
+           │       └ <function Session.request at 0x000001C561845D00>
+           └ <requests.sessions.Session object at 0x000001C56212C150>
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\requests\sessions.py", line 587, in request
+    resp = self.send(prep, **send_kwargs)
+           │    │    │       └ {'timeout': None, 'allow_redirects': True, 'proxies': OrderedDict(), 'stream': False, 'verify': True, 'cert': None}
+           │    │    └ <PreparedRequest [GET]>
+           │    └ <function Session.send at 0x000001C561846200>
+           └ <requests.sessions.Session object at 0x000001C56212C150>
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\requests\sessions.py", line 701, in send
+    r = adapter.send(request, **kwargs)
+        │       │    │          └ {'timeout': None, 'proxies': OrderedDict(), 'stream': False, 'verify': True, 'cert': None}
+        │       │    └ <PreparedRequest [GET]>
+        │       └ <function HTTPAdapter.send at 0x000001C561845580>
+        └ <requests.adapters.HTTPAdapter object at 0x000001C56212EAD0>
+  File "C:\Users\Бимба\PycharmProjects\scan_av_script\venv\Lib\site-packages\requests\adapters.py", line 565, in send
+    raise ConnectionError(e, request=request)
+          │                          └ <PreparedRequest [GET]>
+          └ <class 'requests.exceptions.ConnectionError'>
+
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='card.wb.ru', port=443): Max retries exceeded with url: /cards/detail?spp=27&regions=64,58,83,4,38,80,33,70,82,86,30,69,22,66,31,40,1,48&pricemarginCoeff=1.0&reg=1&appType=1&emp=0&locale=ru&lang=ru&curr=rub&couponsGeo=2,12,7,3,6,13,21&dest=-1113276,-79379,-1104258,-5818883&nm=43761079;70219741;70219741;48844253;41668349;43761079;41668349;48844253;41668349;44624275;43761079;48505951;48505951;29419532;29419532;44624275;70219741;67240679;54056124;29419530;30598506;29419530;29419531;111821934;29535553;48505951;67240679;15455324;29419530;54056124;49714076;30598508;44624275;67240679;48844253;29535553;40938960;29419532;54056124;111512342;40938960;30598507;111512342;41657972;29535553;15455324;41657972;29419531;40938960;49714076;41657972;29419531;111821934;111512342;116546792;15455324;111821934;49714076;116547557;30599690;30599691;25331983;25329167;25350128;25310214;30599689;25350128;25142630;41668349;49270242;25142630;25142630;17331618;31609933;31609933;31613459;25331983;25314782;31612474;25314782;25310214;139711427;139727589;139731468;139711427;139731468;139727589;139727589;139731468;139711427;138930715;139376183;138916198;139375462;139385177;139384958;138925575;139384958;139375462;138930715;139385177;139376183;138916198;138925575;139384958;138916198;138925575;138930715;139375462;139376183;139385177;139742331;139741328;139738254;139738254;139738254;139744148 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x000001C56215D010>: Failed to establish a new connection: [Errno 11001] getaddrinfo failed'))
+2023-02-03 20:24:44.815 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 20:24:44.815493
+2023-02-03 20:30:08.262 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 20:30:08.262110
+2023-02-03 20:35:31.622 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 20:35:31.622600
+2023-02-03 20:40:54.935 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 20:40:54.935970
+2023-02-03 20:46:18.189 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 20:46:18.189204
+2023-02-03 20:51:42.971 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 20:51:42.971855
+2023-02-03 20:57:12.970 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 20:57:12.969068
+2023-02-03 21:02:42.201 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 21:02:42.201696
+2023-02-03 21:08:11.004 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 21:08:11.004150
+2023-02-03 21:13:39.985 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 21:13:39.985797
+2023-02-03 21:19:06.515 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 21:19:06.515901
+2023-02-03 21:24:34.835 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 21:24:34.835198
+2023-02-03 21:29:58.901 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 21:29:58.901715
+2023-02-03 21:35:22.753 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 21:35:22.753204
+2023-02-03 21:48:48.100 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 21:48:48.100094
+2023-02-03 21:55:11.120 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 21:55:11.120735
+2023-02-03 22:00:42.364 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 22:00:42.364373
+2023-02-03 22:06:08.784 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 22:06:08.784041
+2023-02-03 22:11:35.279 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 22:11:35.279016
+2023-02-03 22:17:01.333 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 22:17:01.332172
+2023-02-03 23:07:07.552 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 23:07:07.552216
+2023-02-03 23:12:35.019 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 23:12:35.019071
+2023-02-03 23:18:01.891 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 23:18:01.891098
+2023-02-03 23:23:29.359 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 23:23:29.359726
+2023-02-03 23:32:23.632 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 23:32:23.632714
+2023-02-03 23:37:51.610 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 23:37:51.610888
+2023-02-03 23:48:51.747 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-03 23:48:51.747446
+2023-02-07 13:58:44.031 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-07 13:58:44.031772
+2023-02-07 14:04:08.686 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-07 14:04:08.686181
+2023-02-07 17:36:36.881 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-07 17:36:36.881960
+2023-02-07 17:42:04.260 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-07 17:42:04.260347
+2023-02-07 17:47:29.565 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-07 17:47:29.564083
+2023-02-07 17:52:54.677 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-07 17:52:54.677187
+2023-02-07 17:58:19.615 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-07 17:58:19.615616
+2023-02-07 18:03:45.222 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-07 18:03:45.222555
+2023-02-07 18:09:10.895 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-07 18:09:10.894179
+2023-02-07 18:14:35.948 | INFO     | __main__:sell_speed:73 - Executed at time:2023-02-07 18:14:35.948908

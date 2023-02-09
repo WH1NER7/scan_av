@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta
 import os
 import sys
 
@@ -18,24 +18,24 @@ logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{mess
 @logger.catch
 def sell_speed():
     if not os.path.isfile(
-            PathManager.get(f'excels/speed_calc/sales_stats_{datetime.datetime.now().strftime("%d-%m-%Y")}.xlsx')):
+            PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx')):
         qty_wh_arr = inserter()
         qty_wh_arr = (list(map(list, {tuple(x) for x in qty_wh_arr})))
         excel_lines = []
         for item in qty_wh_arr:
             if item[0]:
                 excel_lines.append([item[0], item[1], item[2], 0, 0, 0, 0])
-        columns = ['Склад', 'Номенклатура', f'{datetime.datetime.now().strftime("%H:%M")}',
+        columns = ['Склад', 'Номенклатура', f'{datetime.now().strftime("%H:%M")}',
                    'Продажи', 'Возвраты', 'Поставки', 'Скорость продажи за день']
         data = pd.DataFrame(excel_lines, columns=columns)
         data.style.format({'Номенклатура': "{:.2%}"})
         data.to_excel(
-            PathManager.get(f'excels/speed_calc/sales_stats_{datetime.datetime.now().strftime("%d-%m-%Y")}.xlsx'),
+            PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx'),
             index=False)
     elif os.path.isfile(
-            PathManager.get(f'excels/speed_calc/sales_stats_{datetime.datetime.now().strftime("%d-%m-%Y")}.xlsx')):
+            PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx')):
         data = pd.read_excel(
-            PathManager.get(f'excels/speed_calc/sales_stats_{datetime.datetime.now().strftime("%d-%m-%Y")}.xlsx'))
+            PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx'))
         columns = data.columns
         arr = data.to_numpy()
         arr = list(arr)
@@ -62,18 +62,21 @@ def sell_speed():
                     temp_arr[len(temp_arr) - 3] = returns
                     temp_arr[len(temp_arr) - 4] = sales
                     new_arr.append(temp_arr)
-        columns = np.insert(columns, len(columns) - 4, f'{datetime.datetime.now().strftime("%H:%M")}')
+        columns = np.insert(columns, len(columns) - 4, f'{datetime.now().strftime("%H:%M")}')
         data = pd.DataFrame(new_arr, columns=columns)
         data.style.format({'Номенклатура': "{:.2%}"})
         data.to_excel(
-            PathManager.get(f'excels/speed_calc/sales_stats_{datetime.datetime.now().strftime("%d-%m-%Y")}.xlsx'),
+            PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx'),
             index=False)
-        logger.info(f'Executed at time:{datetime.datetime.now()}', value=10)
+        logger.info(f'Executed at time:{datetime.now()}', value=10)
 
 
 def stat_for_day():
+    data_day_ago = datetime.now() - timedelta(days=1)
+    new_time = data_day_ago.strftime("%d-%m-%Y")
+
     data = pd.read_excel(
-        PathManager.get(f'excels/speed_calc/sales_stats_{datetime.datetime.now().strftime("%d-%m-%Y")}.xlsx'))
+        PathManager.get(f'excels/speed_calc/sales_stats_{new_time}.xlsx'))
     data_arrayed = data.values.tolist()
 
     for arr in data_arrayed:
@@ -83,8 +86,11 @@ def stat_for_day():
 
 
 def stats_for_day_per_hour():
+    data_day_ago = datetime.now() - timedelta(days=1)
+    new_time = data_day_ago.strftime("%d-%m-%Y")
+
     data = pd.read_excel(
-        PathManager.get(f'excels/speed_calc/sales_stats_{datetime.datetime.now().strftime("%d-%m-%Y")}.xlsx'))
+        PathManager.get(f'excels/speed_calc/sales_stats_{new_time}.xlsx'))
     data_arrayed = data.values.tolist()
     global_data_per_day_by_hour = []
     columns_count = 0
@@ -119,7 +125,7 @@ def stats_for_day_per_hour():
     columns = columns_names(columns_count)
     data = pd.DataFrame(global_data_per_day_by_hour, columns=columns)
     data.to_excel(
-        PathManager.get(f'excels/speed_calc/stats_per_hours_{datetime.datetime.now().strftime("%d-%m-%Y")}.xlsx'),
+        PathManager.get(f'excels/speed_calc/stats_per_hours_{new_time}.xlsx'),
         index=False)
 
 
@@ -133,3 +139,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

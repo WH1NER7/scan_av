@@ -181,7 +181,7 @@ def global_sell_speed():
         PathManager.get(f'excels/speed_calc/global_speed.xlsx'),
         index=False)
 
-sell_speed()
+global_sell_speed()
 def main():
     schedule.every(5).minutes.do(sell_speed)
     schedule.every().day.at('00:20').do(stats_for_day_per_hour)

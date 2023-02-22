@@ -5,15 +5,26 @@ import sys
 import numpy as np
 import pandas as pd
 
+import openpyxl
+import jinja2
+
 from misc.arrays_n_xlsx import columns_names
 from misc.inserter import inserter
 from misc.pathManager import PathManager
 import schedule
 from loguru import logger
 
+
 logger.add("file_1.log", rotation="500 MB")
+logger.add("file_1.log", colorize=True, format="<green>{time}</green> <level>{message}</level>")
 logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>")
 
+
+def find_yesterday_speed(wh_name, nmId):
+    yesteday_speed = stat_for_day(1)
+    for line in yesteday_speed:
+        if line[0] == wh_name and line[1] == nmId:
+            return line[5]
 
 @logger.catch
 def sell_speed():
@@ -26,7 +37,7 @@ def sell_speed():
             if item[0]:
                 excel_lines.append([item[0], item[1], item[2], 0, 0, 0, 0])
         columns = ['Склад', 'Номенклатура', f'{datetime.now().strftime("%H:%M")}',
-                   'Продажи', 'Возвраты', 'Поставки', 'Скорость продажи за день']
+                   'Остатки в днях', 'Возвраты', 'Поставки', 'Потенциальная скорость']
         data = pd.DataFrame(excel_lines, columns=columns)
         data.style.format({'Номенклатура': "{:.2%}"})
         data.to_excel(
@@ -36,6 +47,7 @@ def sell_speed():
             PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx')):
         data = pd.read_excel(
             PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx'))
+
         columns = data.columns
         arr = data.to_numpy()
         arr = list(arr)
@@ -48,19 +60,30 @@ def sell_speed():
                 returns = 0
                 supplies = 0
                 sales = 0
+                wh_time_not_empty = 0
                 if item[0] == line[0] and item[1] == line[1]:
-                    temp_arr = np.insert(item, len(item) - 4, line[2])
+                    quantity_on_time = line[2]
+                    sell_speed_yesterday = find_yesterday_speed(line[0], line[1])
+                    temp_arr = np.insert(item, len(item) - 4, quantity_on_time)
+                    # print(line[2])
+                    gaps_quantity = len(temp_arr[2:-4])
+                    for qnt in temp_arr[2:-4]:
+                        if qnt > 0:
+                            wh_time_not_empty += 1
                     for i in range(len(temp_arr[2:-4]) - 1):
-                        if temp_arr[2:-4][i] < temp_arr[2:-4][i + 1] and temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] < 2:
+                        if temp_arr[2:-4][i] < temp_arr[2:-4][i + 1] and temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] < 10:
                             returns = temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] + returns
                         elif temp_arr[2:-4][i] > temp_arr[2:-4][i + 1]:
                             sales = temp_arr[2:-4][i] - temp_arr[2:-4][i + 1] + sales
-                        if temp_arr[2:-4][i] < temp_arr[2:-4][i + 1] and temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] >= 2:
+                        if temp_arr[2:-4][i] < temp_arr[2:-4][i + 1] and temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] >= 10:
                             supplies = temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] + supplies
-                    temp_arr[len(temp_arr) - 1] = sales
+                    temp_arr[len(temp_arr) - 1] = sales * wh_time_not_empty / gaps_quantity
                     temp_arr[len(temp_arr) - 2] = supplies
                     temp_arr[len(temp_arr) - 3] = returns
-                    temp_arr[len(temp_arr) - 4] = sales
+                    if sell_speed_yesterday:
+                        temp_arr[len(temp_arr) - 4] = quantity_on_time / sell_speed_yesterday
+                    else:
+                        temp_arr[len(temp_arr) - 4] = 0
                     new_arr.append(temp_arr)
         columns = np.insert(columns, len(columns) - 4, f'{datetime.now().strftime("%H:%M")}')
         data = pd.DataFrame(new_arr, columns=columns)
@@ -70,25 +93,25 @@ def sell_speed():
             index=False)
         logger.info(f'Executed at time:{datetime.now()}', value=10)
 
-
-def stat_for_day():
-    data_day_ago = datetime.now() - timedelta(days=1)
+def stat_for_day(time_delta):
+    data_day_ago = datetime.now() - timedelta(days=time_delta)
     new_time = data_day_ago.strftime("%d-%m-%Y")
 
     data = pd.read_excel(
         PathManager.get(f'excels/speed_calc/sales_stats_{new_time}.xlsx'))
     data_arrayed = data.values.tolist()
-
+    print(f'excels/speed_calc/sales_stats_{new_time}.xlsx')
     for arr in data_arrayed:
-        del arr[2:-4]
+        del arr[2:-1]
 
     return data_arrayed
+# print(stat_for_day(2))
+# sell_speed()
 
-
+@logger.catch
 def stats_for_day_per_hour():
     data_day_ago = datetime.now() - timedelta(days=1)
     new_time = data_day_ago.strftime("%d-%m-%Y")
-
     data = pd.read_excel(
         PathManager.get(f'excels/speed_calc/sales_stats_{new_time}.xlsx'))
     data_arrayed = data.values.tolist()
@@ -98,7 +121,7 @@ def stats_for_day_per_hour():
         data_for_hour_report = []
         wh_quantity_per_day = arr[2:-4]
         wh_name_n_barcode = arr[0:2]
-        splits = [wh_quantity_per_day[i:i + 13] for i in range(0, len(wh_quantity_per_day), 12)]
+        splits = [wh_quantity_per_day[i:i + 12] for i in range(0, len(wh_quantity_per_day), 11)]
         columns_count = len(splits)
         data_for_hour_report.append(wh_name_n_barcode[0])
         data_for_hour_report.append(wh_name_n_barcode[1])
@@ -129,9 +152,34 @@ def stats_for_day_per_hour():
         index=False)
 
 
+def global_sell_speed():
+    speed_all_barc = []
+    data_from_inserter = inserter()
+    for qnt in data_from_inserter:
+        speed_all_barc.append([qnt[0], qnt[1], 0, 0, 0, 0, 0, 0, 0, 0])
+    for i in [7, 6, 5, 4, 3, 2, 1]:
+        speed_for_day = stat_for_day(i)
+        for wh_barcode in speed_for_day:
+            for wh_barcode_global in speed_all_barc:
+                if wh_barcode[0] == wh_barcode_global[0] and wh_barcode[1] == wh_barcode_global[1]:
+                    wh_barcode_global[9 - i] = wh_barcode[2]
+
+    for data in speed_all_barc:
+        print(data)
+        print(data[2:9])
+        summ = sum(data[2:9])
+        data[9] = summ / 7
+    print(speed_all_barc)
+    data = pd.DataFrame(speed_all_barc, columns=['Склад', 'Баркод', '1', '2', '3', '4', '5', '6', '7', 'Усредненная скорость'])
+    data.to_excel(
+        PathManager.get(f'excels/speed_calc/global_speed.xlsx'),
+        index=False)
+
+
 def main():
     schedule.every(5).minutes.do(sell_speed)
     schedule.every().day.at('00:20').do(stats_for_day_per_hour)
+    schedule.every().day.at('00:10').do(global_sell_speed)
 
     while True:
         schedule.run_pending()

@@ -1,5 +1,6 @@
 import math
 
+import pandas as pd
 import requests as requests
 
 from misc.arrays_n_xlsx import transpose_array, read_xlsx
@@ -20,8 +21,14 @@ def wh_name(code):
             return names[i]
     return False
 
+def wh_names():
+    codes = pd.read_excel(PathManager.get('excels/Соответствия складов 19.10.xlsx')).values.tolist()
+    return codes
+
 def inserter():
+    wh_names_arr = wh_names()
     info = []
+    broken_articles = []
     barcodes = transpose_array(read_xlsx(PathManager.get('excels/11otchet.xlsx'), ['Баркод']))[0]
     articles = transpose_array(read_xlsx(PathManager.get('excels/11otchet.xlsx'), ['Номенклатура']))[0]
     sizes = transpose_array(read_xlsx(PathManager.get('excels/11otchet.xlsx'), ['Размер вещи']))[0]
@@ -35,11 +42,15 @@ def inserter():
         for i in sizesSpp:
             for j in range(len(sizes)):
                 try:
-
                     if i.get('origName') == sizes[j] and json1.get('data').get('products')[u].get('id') == articles[j]:
                         currentBarcode = math.floor(barcodes[j])
                         tmp = i.get('stocks')
-                        for w in tmp:
-                            info.append([wh_name(w.get('wh')), currentBarcode, w.get('qty')])
-                except: pass
-    return info
+                        if i.get('stocks') != []:
+                            for w in tmp:
+                                info.append([wh_name(w.get('wh')), currentBarcode, w.get('qty')])
+                        else:
+                            for wh_name_in_arr in wh_names_arr:
+                                info.append([wh_name_in_arr[0], currentBarcode, 0])
+                except:
+                    pass
+    return list(map(list, {tuple(x) for x in info}))

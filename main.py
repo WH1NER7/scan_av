@@ -20,14 +20,18 @@ logger.add("file_1.log", colorize=True, format="<green>{time}</green> <level>{me
 logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>")
 
 
-def find_yesterday_speed(wh_name, nmId):
-    yesteday_speed = stat_for_day(1)
-    for line in yesteday_speed:
-        if line[0] == wh_name and line[1] == nmId:
-            return line[5]
+def find_sell_speed(wh_name, nmId):
+    data = pd.read_excel(
+        PathManager.get(f'excels/speed_calc/global_speed.xlsx'))
+    data_arrayed = data.values.tolist()
+    for data_arr in data_arrayed:
+        if data_arr[0] == wh_name and data_arr[1] == nmId:
+            return data_arr[9]
+
 
 @logger.catch
 def sell_speed():
+    print('start')
     if not os.path.isfile(
             PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx')):
         qty_wh_arr = inserter()
@@ -63,7 +67,7 @@ def sell_speed():
                 wh_time_not_empty = 0
                 if item[0] == line[0] and item[1] == line[1]:
                     quantity_on_time = line[2]
-                    sell_speed_yesterday = find_yesterday_speed(line[0], line[1])
+                    sell_speed_skus_wh = find_sell_speed(line[0], line[1])
                     temp_arr = np.insert(item, len(item) - 4, quantity_on_time)
                     # print(line[2])
                     gaps_quantity = len(temp_arr[2:-4])
@@ -80,8 +84,8 @@ def sell_speed():
                     temp_arr[len(temp_arr) - 1] = sales * wh_time_not_empty / gaps_quantity
                     temp_arr[len(temp_arr) - 2] = supplies
                     temp_arr[len(temp_arr) - 3] = returns
-                    if sell_speed_yesterday:
-                        temp_arr[len(temp_arr) - 4] = quantity_on_time / sell_speed_yesterday
+                    if sell_speed_skus_wh:
+                        temp_arr[len(temp_arr) - 4] = quantity_on_time / sell_speed_skus_wh
                     else:
                         temp_arr[len(temp_arr) - 4] = 0
                     new_arr.append(temp_arr)
@@ -92,6 +96,8 @@ def sell_speed():
             PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx'),
             index=False)
         logger.info(f'Executed at time:{datetime.now()}', value=10)
+    print('end')
+
 
 def stat_for_day(time_delta):
     data_day_ago = datetime.now() - timedelta(days=time_delta)
@@ -175,7 +181,7 @@ def global_sell_speed():
         PathManager.get(f'excels/speed_calc/global_speed.xlsx'),
         index=False)
 
-
+sell_speed()
 def main():
     schedule.every(5).minutes.do(sell_speed)
     schedule.every().day.at('00:20').do(stats_for_day_per_hour)

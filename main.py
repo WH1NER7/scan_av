@@ -49,8 +49,9 @@ def sell_speed():
             index=False)
     elif os.path.isfile(
             PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx')):
+        data_str = datetime.now().strftime("%d-%m-%Y")
         data = pd.read_excel(
-            PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx'))
+            PathManager.get(f'excels/speed_calc/sales_stats_{data_str}.xlsx'))
 
         columns = data.columns
         arr = data.to_numpy()
@@ -93,7 +94,7 @@ def sell_speed():
         data = pd.DataFrame(new_arr, columns=columns)
         data.style.format({'Номенклатура': "{:.2%}"})
         data.to_excel(
-            PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx'),
+            PathManager.get(f'excels/speed_calc/sales_stats_{data_str}.xlsx'),
             index=False)
         logger.info(f'Executed at time:{datetime.now()}', value=10)
     print('end')
@@ -181,10 +182,10 @@ def global_sell_speed():
         PathManager.get(f'excels/speed_calc/global_speed.xlsx'),
         index=False)
 
-global_sell_speed()
+# print(os.path.isfile(PathManager.get(f'excels/speed_calc/sales_stats_23-02-2023.xlsx')))
 def main():
     schedule.every(5).minutes.do(sell_speed)
-    schedule.every().day.at('00:20').do(stats_for_day_per_hour)
+    # schedule.every().day.at('00:20').do(stats_for_day_per_hour)
     schedule.every().day.at('00:10').do(global_sell_speed)
 
     while True:

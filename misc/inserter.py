@@ -28,7 +28,6 @@ def wh_names():
 def inserter():
     wh_names_arr = wh_names()
     info = []
-    broken_articles = []
     barcodes = transpose_array(read_xlsx(PathManager.get('excels/11otchet.xlsx'), ['Баркод']))[0]
     articles = transpose_array(read_xlsx(PathManager.get('excels/11otchet.xlsx'), ['Номенклатура']))[0]
     sizes = transpose_array(read_xlsx(PathManager.get('excels/11otchet.xlsx'), ['Размер вещи']))[0]

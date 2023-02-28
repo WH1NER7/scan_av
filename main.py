@@ -30,7 +30,7 @@ def find_sell_speed(wh_name, nmId):
 
 
 @logger.catch
-def sell_speed():
+def start_day_sell_speed():
     print('start')
     if not os.path.isfile(
             PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx')):
@@ -47,56 +47,57 @@ def sell_speed():
         data.to_excel(
             PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx'),
             index=False)
-    elif os.path.isfile(
-            PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx')):
-        data_str = datetime.now().strftime("%d-%m-%Y")
-        data = pd.read_excel(
-            PathManager.get(f'excels/speed_calc/sales_stats_{data_str}.xlsx'))
 
-        columns = data.columns
-        arr = data.to_numpy()
-        arr = list(arr)
-        qty_wh_arr = inserter()
-        qty_wh_arr = (list(map(list, {tuple(x) for x in qty_wh_arr})))
+def sell_speed():
+    print('start_sell_speed')
+    date_str = datetime.now().strftime("%d-%m-%Y")
+    data = pd.read_excel(
+        PathManager.get(f'excels/speed_calc/sales_stats_{date_str}.xlsx'))
 
-        new_arr = []
-        for item in arr:
-            for line in qty_wh_arr:
-                returns = 0
-                supplies = 0
-                sales = 0
-                wh_time_not_empty = 0
-                if item[0] == line[0] and item[1] == line[1]:
-                    quantity_on_time = line[2]
-                    sell_speed_skus_wh = find_sell_speed(line[0], line[1])
-                    temp_arr = np.insert(item, len(item) - 4, quantity_on_time)
-                    # print(line[2])
-                    gaps_quantity = len(temp_arr[2:-4])
-                    for qnt in temp_arr[2:-4]:
-                        if qnt > 0:
-                            wh_time_not_empty += 1
-                    for i in range(len(temp_arr[2:-4]) - 1):
-                        if temp_arr[2:-4][i] < temp_arr[2:-4][i + 1] and temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] < 10:
-                            returns = temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] + returns
-                        elif temp_arr[2:-4][i] > temp_arr[2:-4][i + 1]:
-                            sales = temp_arr[2:-4][i] - temp_arr[2:-4][i + 1] + sales
-                        if temp_arr[2:-4][i] < temp_arr[2:-4][i + 1] and temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] >= 10:
-                            supplies = temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] + supplies
-                    temp_arr[len(temp_arr) - 1] = sales * wh_time_not_empty / gaps_quantity
-                    temp_arr[len(temp_arr) - 2] = supplies
-                    temp_arr[len(temp_arr) - 3] = returns
-                    if sell_speed_skus_wh:
-                        temp_arr[len(temp_arr) - 4] = quantity_on_time / sell_speed_skus_wh
-                    else:
-                        temp_arr[len(temp_arr) - 4] = 0
-                    new_arr.append(temp_arr)
-        columns = np.insert(columns, len(columns) - 4, f'{datetime.now().strftime("%H:%M")}')
-        data = pd.DataFrame(new_arr, columns=columns)
-        data.style.format({'Номенклатура': "{:.2%}"})
-        data.to_excel(
-            PathManager.get(f'excels/speed_calc/sales_stats_{data_str}.xlsx'),
-            index=False)
-        logger.info(f'Executed at time:{datetime.now()}', value=10)
+    columns = data.columns
+    arr = data.to_numpy()
+    arr = list(arr)
+    qty_wh_arr = inserter()
+    qty_wh_arr = (list(map(list, {tuple(x) for x in qty_wh_arr})))
+
+    new_arr = []
+    for item in arr:
+        for line in qty_wh_arr:
+            returns = 0
+            supplies = 0
+            sales = 0
+            wh_time_not_empty = 0
+            if item[0] == line[0] and item[1] == line[1]:
+                quantity_on_time = line[2]
+                sell_speed_skus_wh = find_sell_speed(line[0], line[1])
+                temp_arr = np.insert(item, len(item) - 4, quantity_on_time)
+                # print(line[2])
+                gaps_quantity = len(temp_arr[2:-4])
+                for qnt in temp_arr[2:-4]:
+                    if qnt > 0:
+                        wh_time_not_empty += 1
+                for i in range(len(temp_arr[2:-4]) - 1):
+                    if temp_arr[2:-4][i] < temp_arr[2:-4][i + 1] and temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] < 10:
+                        returns = temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] + returns
+                    elif temp_arr[2:-4][i] > temp_arr[2:-4][i + 1]:
+                        sales = temp_arr[2:-4][i] - temp_arr[2:-4][i + 1] + sales
+                    if temp_arr[2:-4][i] < temp_arr[2:-4][i + 1] and temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] >= 10:
+                        supplies = temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] + supplies
+                temp_arr[len(temp_arr) - 1] = sales * wh_time_not_empty / gaps_quantity
+                temp_arr[len(temp_arr) - 2] = supplies
+                temp_arr[len(temp_arr) - 3] = returns
+                if sell_speed_skus_wh:
+                    temp_arr[len(temp_arr) - 4] = quantity_on_time / sell_speed_skus_wh
+                else:
+                    temp_arr[len(temp_arr) - 4] = 0
+                new_arr.append(temp_arr)
+    columns = np.insert(columns, len(columns) - 4, f'{datetime.now().strftime("%H:%M")}')
+    data = pd.DataFrame(new_arr, columns=columns)
+    data.style.format({'Номенклатура': "{:.2%}"})
+    data.to_excel(
+        PathManager.get(f'excels/speed_calc/sales_stats_{date_str}.xlsx'),
+        index=False)
+    logger.info(f'Executed at time:{datetime.now()}', value=10)
     print('end')
 
 
@@ -183,10 +184,15 @@ def global_sell_speed():
         index=False)
 
 # print(os.path.isfile(PathManager.get(f'excels/speed_calc/sales_stats_23-02-2023.xlsx')))
+
+# start_day_sell_speed()
+global_sell_speed()
+sell_speed()
 def main():
+    schedule.every().day.at('00:00').do(start_day_sell_speed)
+    schedule.every().day.at('00:04').do(global_sell_speed)
     schedule.every(5).minutes.do(sell_speed)
     # schedule.every().day.at('00:20').do(stats_for_day_per_hour)
-    schedule.every().day.at('00:10').do(global_sell_speed)
 
     while True:
         schedule.run_pending()

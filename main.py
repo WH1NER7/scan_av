@@ -185,9 +185,7 @@ def global_sell_speed():
 
 # print(os.path.isfile(PathManager.get(f'excels/speed_calc/sales_stats_23-02-2023.xlsx')))
 
-# start_day_sell_speed()
-global_sell_speed()
-sell_speed()
+
 def main():
     schedule.every().day.at('00:00').do(start_day_sell_speed)
     schedule.every().day.at('00:04').do(global_sell_speed)

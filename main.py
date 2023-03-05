@@ -83,7 +83,8 @@ def sell_speed():
                         sales = temp_arr[2:-4][i] - temp_arr[2:-4][i + 1] + sales
                     if temp_arr[2:-4][i] < temp_arr[2:-4][i + 1] and temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] >= 10:
                         supplies = temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] + supplies
-                temp_arr[len(temp_arr) - 1] = sales * wh_time_not_empty / gaps_quantity
+                # temp_arr[len(temp_arr) - 1] = sales * wh_time_not_empty / gaps_quantity
+                temp_arr[len(temp_arr) - 1] = sales
                 temp_arr[len(temp_arr) - 2] = supplies
                 temp_arr[len(temp_arr) - 3] = returns
                 if sell_speed_skus_wh:
@@ -114,6 +115,7 @@ def stat_for_day(time_delta):
 
     return data_arrayed
 # print(stat_for_day(2))
+# start_day_sell_speed()
 # sell_speed()
 
 @logger.catch

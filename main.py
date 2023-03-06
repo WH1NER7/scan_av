@@ -79,7 +79,7 @@ def sell_speed():
                 for i in range(len(temp_arr[2:-4]) - 1):
                     if temp_arr[2:-4][i] < temp_arr[2:-4][i + 1] and temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] < 10:
                         returns = temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] + returns
-                    elif temp_arr[2:-4][i] > temp_arr[2:-4][i + 1]:
+                    if temp_arr[2:-4][i] > temp_arr[2:-4][i + 1]:
                         sales = temp_arr[2:-4][i] - temp_arr[2:-4][i + 1] + sales
                     if temp_arr[2:-4][i] < temp_arr[2:-4][i + 1] and temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] >= 10:
                         supplies = temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] + supplies
@@ -144,9 +144,9 @@ def stats_for_day_per_hour():
             for i in range(len(hour_data) - 1):
                 if hour_data[i] < hour_data[i + 1] and hour_data[i + 1] - hour_data[i] < 2:
                     returns = hour_data[i + 1] - hour_data[i] + returns
-                elif hour_data[i] > hour_data[i + 1]:
+                if hour_data[i] > hour_data[i + 1]:
                     sales = hour_data[i] - hour_data[i + 1] + sales
-                elif hour_data[i] < hour_data[i + 1] and hour_data[i + 1] - hour_data[i] >= 2:
+                if hour_data[i] < hour_data[i + 1] and hour_data[i + 1] - hour_data[i] >= 2:
                     supplies = hour_data[i + 1] - hour_data[i] + supplies
             excel_line.append(sales)
             excel_line.append(returns)

@@ -39,8 +39,8 @@ def start_day_sell_speed():
         excel_lines = []
         for item in qty_wh_arr:
             if item[0]:
-                excel_lines.append([item[0], item[1], item[2], 0, 0, 0, 0])
-        columns = ['Склад', 'Номенклатура', f'{datetime.now().strftime("%H:%M")}',
+                excel_lines.append([item[0], item[1], item[2], item[2], 0, 0, 0, 0])
+        columns = ['Склад', 'Номенклатура', f'{datetime.now().strftime("%H:%M")}', f'{datetime.now().strftime("%H:%M")}',
                    'Остатки в днях', 'Возвраты', 'Поставки', 'Потенциальная скорость']
         data = pd.DataFrame(excel_lines, columns=columns)
         data.style.format({'Номенклатура': "{:.2%}"})
@@ -76,6 +76,7 @@ def sell_speed():
                 for qnt in temp_arr[2:-4]:
                     if qnt > 0:
                         wh_time_not_empty += 1
+                print(temp_arr[2:-4])
                 for i in range(len(temp_arr[2:-4]) - 1):
                     if temp_arr[2:-4][i] < temp_arr[2:-4][i + 1] and temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] < 10:
                         returns = temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] + returns

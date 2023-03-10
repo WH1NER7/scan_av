@@ -49,7 +49,7 @@ def start_day_sell_speed():
             index=False)
 
 def sell_speed():
-    if os.path.isfile(PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx')):
+    if os.path.isfile(PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx')) and datetime.now().strftime("%H:%M") > '00:09':
         print('start_sell_speed')
         date_str = datetime.now().strftime("%d-%m-%Y")
         data = pd.read_excel(
@@ -94,9 +94,9 @@ def sell_speed():
                         temp_arr[len(temp_arr) - 4] = 0
                     new_arr.append(temp_arr)
         columns = np.insert(columns, len(columns) - 4, f'{datetime.now().strftime("%H:%M")}')
-        data = pd.DataFrame(new_arr, columns=columns)
-        data.style.format({'Номенклатура': "{:.2%}"})
-        data.to_excel(
+        data_new = pd.DataFrame(new_arr, columns=columns)
+        data_new.style.format({'Номенклатура': "{:.2%}"})
+        data_new.to_excel(
             PathManager.get(f'excels/speed_calc/sales_stats_{date_str}.xlsx'),
             index=False)
         logger.info(f'Executed at time:{datetime.now()}', value=10)

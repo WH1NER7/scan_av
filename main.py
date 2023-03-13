@@ -84,6 +84,12 @@ def sell_speed():
                             sales = temp_arr[2:-4][i] - temp_arr[2:-4][i + 1] + sales
                         if temp_arr[2:-4][i] < temp_arr[2:-4][i + 1] and temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] >= 10:
                             supplies = temp_arr[2:-4][i + 1] - temp_arr[2:-4][i] + supplies
+                        try:
+                            if temp_arr[2:-4][i] < temp_arr[2:-4][i + 1] and temp_arr[2:-4][i] == 0 and temp_arr[2:-4][i + 1] > 5 and temp_arr[2:-4][i - 1] > 5:
+                                sales = 0
+                                supplies = 0
+                        except:
+                            print('Вынужденный выход за пределы диапазона')
                     # temp_arr[len(temp_arr) - 1] = sales * wh_time_not_empty / gaps_quantity
                     temp_arr[len(temp_arr) - 1] = sales
                     temp_arr[len(temp_arr) - 2] = supplies

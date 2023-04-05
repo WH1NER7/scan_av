@@ -7,7 +7,6 @@ from misc.arrays_n_xlsx import transpose_array, read_xlsx
 from misc.pathManager import PathManager
 from misc.spp_req import post_request_spp
 
-spp = (post_request_spp('https://www.wildberries.ru/webapi/personalinfo').get('value').get('personalDiscount'))
 
 
 def wh_name(code):
@@ -26,6 +25,7 @@ def wh_names():
     return codes
 
 def inserter():
+    spp = (post_request_spp('https://www.wildberries.ru/webapi/personalinfo').get('value').get('personalDiscount'))
     wh_names_arr = wh_names()
     info = []
     barcodes = transpose_array(read_xlsx(PathManager.get('excels/11otchet.xlsx'), ['Баркод']))[0]

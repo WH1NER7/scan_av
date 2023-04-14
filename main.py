@@ -213,7 +213,7 @@ def rewrite_previous_reports():
     barcodes = data_actual_info_cards[0]
     articles = data_actual_info_cards[1]
     sizes = data_actual_info_cards[2]
-    for i in range(1, 9):
+    for i in range(3, 4):
         data_day_ago = datetime.now() - timedelta(days=i)
         new_time = data_day_ago.strftime("%d-%m-%Y")
         new_data_for_day = []
@@ -230,7 +230,7 @@ def rewrite_previous_reports():
         data = pd.DataFrame(new_data_for_day, columns=columns)
         data.to_excel(PathManager.get(f'excels/speed_calc/sales_stats_{new_time}.xlsx'), index=False)
 rewrite_previous_reports()
-global_sell_speed()
+# global_sell_speed()
 def main():
     schedule.every().day.at('00:00').do(start_day_sell_speed)
     # schedule.every().day.at('00:04').do(global_sell_speed)

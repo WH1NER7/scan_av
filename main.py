@@ -222,8 +222,14 @@ def rewrite_previous_reports():
         for line in data_for_day:
             line = list(line)
             line[0] = wh_code(line[0])
-            line.insert(2, articles[barcodes.index(line[1])])
-            line.insert(3, sizes[barcodes.index(line[1])])
+            try:
+                line.insert(2, articles[barcodes.index(line[1])])
+            except:
+                line.insert(2, 0)
+            try:
+                line.insert(3, sizes[barcodes.index(line[1])])
+            except:
+                line.insert(3, 0)
             new_data_for_day.append(line)
         columns.insert(2, 'Артикул')
         columns.insert(3, 'Размер')

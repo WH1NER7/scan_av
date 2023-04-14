@@ -235,8 +235,8 @@ def rewrite_previous_reports():
         columns.insert(3, 'Размер')
         data = pd.DataFrame(new_data_for_day, columns=columns)
         data.to_excel(PathManager.get(f'excels/speed_calc/sales_stats_{new_time}.xlsx'), index=False)
-rewrite_previous_reports()
-# global_sell_speed()
+# rewrite_previous_reports()
+global_sell_speed()
 def main():
     schedule.every().day.at('00:00').do(start_day_sell_speed)
     # schedule.every().day.at('00:04').do(global_sell_speed)

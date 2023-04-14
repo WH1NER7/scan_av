@@ -26,6 +26,18 @@ def wh_name(code):
     return False
 
 
+def wh_code(name):
+    codes = transpose_array(
+        read_xlsx(PathManager.get('excels/Соответствия складов 19.10.xlsx'), ['Код']))[0]
+    names = transpose_array(
+        read_xlsx(PathManager.get('excels/Соответствия складов 19.10.xlsx'), ['Склад']))[0]
+
+    for i in range(len(names)):
+        if names[i] == name:
+            return codes[i]
+    return False
+
+
 def wh_names():
     codes = pd.read_excel(PathManager.get('excels/Соответствия складов 19.10.xlsx')).values.tolist()
     return codes

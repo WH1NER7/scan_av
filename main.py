@@ -9,7 +9,7 @@ import openpyxl
 import jinja2
 
 from misc.arrays_n_xlsx import columns_names
-from misc.inserter import inserter
+from misc.inserter import inserter, get_actual_cards_info, wh_code
 from misc.pathManager import PathManager
 import schedule
 from loguru import logger
@@ -47,7 +47,7 @@ def start_day_sell_speed():
         data.to_excel(
             PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx'),
             index=False)
-start_day_sell_speed()
+# start_day_sell_speed()
 
 def sell_speed():
     if os.path.isfile(PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx')) and datetime.now().strftime("%H:%M") > '00:09':
@@ -195,7 +195,42 @@ def global_sell_speed():
 # print(os.path.isfile(PathManager.get(f'excels/speed_calc/sales_stats_23-02-2023.xlsx')))
 
 
+def stat_for_day_temp(time_delta):
+    data_day_ago = datetime.now() - timedelta(days=time_delta)
+    new_time = data_day_ago.strftime("%d-%m-%Y")
 
+    data = pd.read_excel(
+        PathManager.get(f'excels/speed_calc/sales_stats_{new_time}.xlsx'))
+    columns = data.columns
+    data_arrayed = data.to_numpy()
+    print(f'excels/speed_calc/sales_stats_{new_time}.xlsx')
+
+    return data_arrayed, columns
+
+
+def rewrite_previous_reports():
+    data_actual_info_cards = get_actual_cards_info()
+    barcodes = data_actual_info_cards[0]
+    articles = data_actual_info_cards[1]
+    sizes = data_actual_info_cards[2]
+    for i in range(1, 9):
+        data_day_ago = datetime.now() - timedelta(days=i)
+        new_time = data_day_ago.strftime("%d-%m-%Y")
+        new_data_for_day = []
+        data_for_day, columns = (stat_for_day_temp(i))
+        columns = list(columns)
+        for line in data_for_day:
+            line = list(line)
+            line[0] = wh_code(line[0])
+            line.insert(2, articles[barcodes.index(line[1])])
+            line.insert(3, sizes[barcodes.index(line[1])])
+            new_data_for_day.append(line)
+        columns.insert(2, 'Артикул')
+        columns.insert(3, 'Размер')
+        data = pd.DataFrame(new_data_for_day, columns=columns)
+        data.to_excel(PathManager.get(f'excels/speed_calc/sales_stats_{new_time}.xlsx'), index=False)
+rewrite_previous_reports()
+global_sell_speed()
 def main():
     schedule.every().day.at('00:00').do(start_day_sell_speed)
     # schedule.every().day.at('00:04').do(global_sell_speed)

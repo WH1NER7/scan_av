@@ -8,6 +8,7 @@ import pandas as pd
 import openpyxl
 import jinja2
 
+from database.main import insert_todays_doc, add_sell_speed
 from misc.arrays_n_xlsx import columns_names
 from misc.inserter import inserter, get_actual_cards_info, wh_code
 from misc.pathManager import PathManager
@@ -47,7 +48,7 @@ def start_day_sell_speed():
         data.to_excel(
             PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx'),
             index=False)
-# start_day_sell_speed()
+
 
 def sell_speed():
     if os.path.isfile(PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx')) and datetime.now().strftime("%H:%M") > '00:09':
@@ -122,9 +123,6 @@ def stat_for_day(time_delta):
         del arr[2:-1]
 
     return data_arrayed
-# print(stat_for_day(2))
-# start_day_sell_speed()
-# sell_speed()
 
 
 @logger.catch
@@ -235,12 +233,34 @@ def rewrite_previous_reports():
         columns.insert(3, 'Размер')
         data = pd.DataFrame(new_data_for_day, columns=columns)
         data.to_excel(PathManager.get(f'excels/speed_calc/sales_stats_{new_time}.xlsx'), index=False)
-# rewrite_previous_reports()
-global_sell_speed()
+
+
+def insert_qnt_on_wh():
+    data = inserter()
+
+    for qnt_on_wh in data:
+        insert_todays_doc(qnt_on_wh[1], qnt_on_wh[2], qnt_on_wh[0], qnt_on_wh[3], qnt_on_wh[4],)
+        print(qnt_on_wh)
+
+
+def upd_qnt(date):
+    data = inserter()
+
+    for qnt_on_wh in data:
+        add_sell_speed(qnt_on_wh[1], qnt_on_wh[2], qnt_on_wh[0], date)
+        print(qnt_on_wh)
+
+
+def start_day_sell_speed_test():
+    insert_qnt_on_wh()
+
+
 def main():
     schedule.every().day.at('00:00').do(start_day_sell_speed)
+    schedule.every().day.at('00:00').do(start_day_sell_speed_test)
     schedule.every().day.at('00:04').do(global_sell_speed)
     schedule.every(5).minutes.do(sell_speed)
+    schedule.every(5).minutes.do(upd_qnt(datetime.now().strftime('%d-%m-%Y')))
     # schedule.every().day.at('00:20').do(stats_for_day_per_hour)
 
     while True:

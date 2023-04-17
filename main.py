@@ -249,8 +249,6 @@ def upd_qnt(date):
     for qnt_on_wh in data:
         add_sell_speed(qnt_on_wh[1], qnt_on_wh[2], qnt_on_wh[0], date)
         print(qnt_on_wh)
-insert_qnt_on_wh()
-
 
 
 def start_day_sell_speed_test():

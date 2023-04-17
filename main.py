@@ -251,8 +251,14 @@ def upd_qnt(date):
         print(qnt_on_wh)
 insert_qnt_on_wh()
 
+
+
 def start_day_sell_speed_test():
     insert_qnt_on_wh()
+
+
+def track_qnt():
+    upd_qnt(datetime.now().strftime('%d-%m-%Y'))
 
 
 def main():
@@ -260,7 +266,6 @@ def main():
     schedule.every().day.at('00:00').do(start_day_sell_speed_test)
     schedule.every().day.at('00:04').do(global_sell_speed)
     schedule.every(5).minutes.do(sell_speed)
-    schedule.every(5).minutes.do(upd_qnt(datetime.now().strftime('%d-%m-%Y')))
     # schedule.every().day.at('00:20').do(stats_for_day_per_hour)
 
     while True:

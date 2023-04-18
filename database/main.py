@@ -102,5 +102,5 @@ def find_qnt_track(date, barcode, wh_code):
         if data1.get('barcode') == barcode and data1.get('date') == date:
             return data1.get(wh_code)
 
-add_all_old_reports_to_db()
+# add_all_old_reports_to_db()
 # add_all_old_reports_to_db_new_format()

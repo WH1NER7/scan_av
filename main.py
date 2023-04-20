@@ -271,8 +271,7 @@ def main():
 
     while True:
         schedule.run_pending()
-start_day_sell_speed()
-start_day_sell_speed_test()
-global_sell_speed()
+
+
 if __name__ == '__main__':
     main()

@@ -248,7 +248,7 @@ def upd_qnt(date):
 
     for qnt_on_wh in data:
         add_sell_speed(qnt_on_wh[1], qnt_on_wh[2], qnt_on_wh[0], date)
-        print(qnt_on_wh)
+        # print(qnt_on_wh)
 
 
 def start_day_sell_speed_test():
@@ -260,18 +260,18 @@ def track_qnt():
 
 
 def main():
-    schedule.every().day.at('00:00').do(start_day_sell_speed)
+    # schedule.every().day.at('00:00').do(start_day_sell_speed)
     schedule.every().day.at('00:01').do(start_day_sell_speed_test)
-    schedule.every().day.at('00:04').do(global_sell_speed)
+    # schedule.every().day.at('00:04').do(global_sell_speed)
 
-    schedule.every(6).minutes.do(sell_speed)
-    schedule.every(4).minutes.do(track_qnt)
+    # schedule.every(6).minutes.do(sell_speed)
+    schedule.every(3).minutes.do(track_qnt)
 
     # schedule.every().day.at('00:20').do(stats_for_day_per_hour)
 
     while True:
         schedule.run_pending()
-start_day_sell_speed()
-start_day_sell_speed_test()
+# start_day_sell_speed()
+# start_day_sell_speed_test()
 if __name__ == '__main__':
     main()

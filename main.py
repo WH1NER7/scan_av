@@ -239,7 +239,7 @@ def insert_qnt_on_wh():
     data = inserter()
 
     for qnt_on_wh in data:
-        insert_todays_doc(qnt_on_wh[1], qnt_on_wh[2], qnt_on_wh[0], qnt_on_wh[3], qnt_on_wh[4],)
+        insert_todays_doc(qnt_on_wh[1], qnt_on_wh[2], qnt_on_wh[0], qnt_on_wh[3], qnt_on_wh[4])
         print(qnt_on_wh)
 
 
@@ -265,13 +265,13 @@ def main():
     schedule.every().day.at('00:04').do(global_sell_speed)
 
     schedule.every(6).minutes.do(sell_speed)
-    schedule.every(5).minutes.do(track_qnt)
+    schedule.every(4).minutes.do(track_qnt)
 
     # schedule.every().day.at('00:20').do(stats_for_day_per_hour)
 
     while True:
         schedule.run_pending()
-# start_day_sell_speed()
-# start_day_sell_speed_test()
+start_day_sell_speed()
+start_day_sell_speed_test()
 if __name__ == '__main__':
     main()

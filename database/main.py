@@ -14,7 +14,6 @@ except:
     print("Could not connect to MongoDB")
 
 
-
 def add_all_old_reports_to_db():
     actual_cards_data = get_actual_cards_info()
 
@@ -82,12 +81,12 @@ def insert_any_day_doc(barcode, qnt, wh_code_number, article, size, date):
 def insert_todays_doc(barcode, qnt, wh_code, article, size):
     speed_data = {
         "date": datetime.now().strftime('%d-%m-%Y'),
-        "quantity": [qnt, qnt],
+        "quantity": [qnt],
         "barcode": barcode,
         "article": article,
         "size": size,
         "wh_code": wh_code,
-        'time_stamps': [datetime.now().strftime("%H:%M"), datetime.now().strftime("%H:%M")]
+        'time_stamps': [datetime.now().strftime("%H:%M")]
     }
     db.sell_speed.insert_one(speed_data)
 
@@ -105,3 +104,30 @@ def find_qnt_track(date, barcode, wh_code_num):
 
 # add_all_old_reports_to_db()
 # add_all_old_reports_to_db_new_format()
+
+
+def find_qnt_doc_in_bd(date_start, date_finish, barcode, wh_code1):
+    time_delta_param = 0
+    new_time = date_start
+    json_arr_to_return = []
+    while date_finish != new_time:
+        data = db.sell_speed.find({'barcode': barcode, "date": new_time, 'wh_code': wh_code1})
+
+        start_json = {'barcode': barcode, "date": new_time, 'wh_code': wh_code1}
+        try:
+            for doc in data:
+                qnt = doc.get('quantity')
+                time_stamps = doc.get('time_stamps')
+                for time_stamp in time_stamps:
+                    start_json[time_stamp] = qnt[time_stamps.index(time_stamp)]
+            json_arr_to_return.append(start_json)
+        except:
+            print('Запрашиваемая дата не существует')
+
+        time_delta_param += 1
+        data_some_days_ago = datetime.strptime(new_time, "%d-%m-%Y") - timedelta(days=time_delta_param)
+        new_time = data_some_days_ago.strftime("%d-%m-%Y")
+        if datetime.strptime(new_time, "%d-%m-%Y") < datetime.strptime(date_finish, "%d-%m-%Y"):
+            break
+
+    return json_arr_to_return

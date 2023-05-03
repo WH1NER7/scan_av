@@ -247,7 +247,10 @@ def upd_qnt(date):
     data = inserter()
 
     for qnt_on_wh in data:
-        add_sell_speed(qnt_on_wh[1], qnt_on_wh[2], qnt_on_wh[0], date)
+        try:
+            add_sell_speed(qnt_on_wh[1], qnt_on_wh[2], qnt_on_wh[0], date)
+        except:
+            pass
         # print(qnt_on_wh)
 
 
@@ -256,7 +259,9 @@ def start_day_sell_speed_test():
 
 
 def track_qnt():
+    print('upd_tracker')
     upd_qnt(datetime.now().strftime('%d-%m-%Y'))
+    print('end')
 
 
 def main():
@@ -273,7 +278,7 @@ def main():
 
     while True:
         schedule.run_pending()
-
+start_day_sell_speed_test()
 
 if __name__ == '__main__':
     main()

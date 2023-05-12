@@ -259,10 +259,12 @@ def start_day_sell_speed_test():
 
 
 def track_qnt():
-    print('upd_tracker')
-    upd_qnt(datetime.now().strftime('%d-%m-%Y'))
-    print('end')
-
+    try:
+        print('upd_tracker')
+        upd_qnt(datetime.now().strftime('%d-%m-%Y'))
+        print('end')
+    except:
+        pass
 
 def main():
     # schedule.every().day.at('00:00').do(start_day_sell_speed)
@@ -272,13 +274,13 @@ def main():
     # schedule.every().day.at('00:04').do(global_sell_speed)
 
     # schedule.every(6).minutes.do(sell_speed)
-    schedule.every(3).minutes.do(track_qnt)
+    schedule.every(5).minutes.do(track_qnt)
 
     # schedule.every().day.at('00:20').do(stats_for_day_per_hour)
 
     while True:
         schedule.run_pending()
-start_day_sell_speed_test()
+
 
 if __name__ == '__main__':
     main()

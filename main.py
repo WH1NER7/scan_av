@@ -266,11 +266,10 @@ def track_qnt():
     except:
         pass
 
+
 def main():
     # schedule.every().day.at('00:00').do(start_day_sell_speed)
     schedule.every().day.at('00:00').do(start_day_sell_speed_test)
-    schedule.every().day.at('00:01').do(start_day_sell_speed_test)
-    schedule.every().day.at('00:02').do(start_day_sell_speed_test)
     # schedule.every().day.at('00:04').do(global_sell_speed)
 
     # schedule.every(6).minutes.do(sell_speed)

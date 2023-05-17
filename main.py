@@ -245,13 +245,15 @@ def insert_qnt_on_wh():
 
 def upd_qnt(date):
     data = inserter()
-
-    for qnt_on_wh in data:
-        try:
-            add_sell_speed(qnt_on_wh[1], qnt_on_wh[2], qnt_on_wh[0], date)
-        except:
-            pass
-        # print(qnt_on_wh)
+    try:
+        for qnt_on_wh in data:
+            try:
+                add_sell_speed(qnt_on_wh[1], qnt_on_wh[2], qnt_on_wh[0], date)
+            except:
+                pass
+            # print(qnt_on_wh)
+    except:
+        pass
 
 
 def start_day_sell_speed_test():
@@ -280,6 +282,8 @@ def main():
     while True:
         schedule.run_pending()
 
-start_day_sell_speed_test()
+# start_day_sell_speed_test()
+
+
 if __name__ == '__main__':
     main()

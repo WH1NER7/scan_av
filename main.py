@@ -280,6 +280,6 @@ def main():
     while True:
         schedule.run_pending()
 
-
+start_day_sell_speed_test()
 if __name__ == '__main__':
     main()

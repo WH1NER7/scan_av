@@ -9,9 +9,12 @@ from misc.spp_req import post_request_spp
 
 
 def get_actual_cards_info():
-    string1 = "http://217.25.93.96/cards_info_spare"
-    response = requests.get(string1)
-    return response.json()
+    try:
+        string1 = "http://217.25.93.96/cards_info_spare"
+        response = requests.get(string1)
+        return response.json()
+    except:
+        return {}
 
 
 def wh_name(code):

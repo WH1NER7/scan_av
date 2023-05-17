@@ -108,9 +108,10 @@ def find_qnt_track(date, barcode, wh_code_num):
 
 def find_qnt_doc_in_bd(date_start, date_finish, barcode, wh_code1):
     time_delta_param = 0
+
     new_time = date_start
     json_arr_to_return = []
-    while date_finish != new_time:
+    while datetime.strptime(date_finish, "%d-%m-%Y") != datetime.strptime(new_time, "%d-%m-%Y"):
         data = db.sell_speed.find({'barcode': barcode, "date": new_time, 'wh_code': wh_code1})
 
         start_json = {'barcode': barcode, "date": new_time, 'wh_code': wh_code1}
@@ -120,14 +121,21 @@ def find_qnt_doc_in_bd(date_start, date_finish, barcode, wh_code1):
                 time_stamps = doc.get('time_stamps')
                 for time_stamp in time_stamps:
                     start_json[time_stamp] = qnt[time_stamps.index(time_stamp)]
-            json_arr_to_return.append(start_json)
+                if len(qnt) > 0:
+                    json_arr_to_return.append(start_json)
         except:
             print('Запрашиваемая дата не существует')
 
-        time_delta_param += 1
+        time_delta_param = 1
         data_some_days_ago = datetime.strptime(new_time, "%d-%m-%Y") - timedelta(days=time_delta_param)
         new_time = data_some_days_ago.strftime("%d-%m-%Y")
         if datetime.strptime(new_time, "%d-%m-%Y") < datetime.strptime(date_finish, "%d-%m-%Y"):
             break
 
-    return json_arr_to_return
+    unique_els = []
+    for dict_item in json_arr_to_return:
+        if dict_item not in unique_els:
+            unique_els.append(dict_item)
+    return unique_els
+
+# print(find_qnt_doc_in_bd('12-05-2023', '01-05-2023', 2037267708361, 507))

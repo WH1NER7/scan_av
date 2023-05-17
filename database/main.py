@@ -142,9 +142,9 @@ def find_qnt_doc_in_bd(date_start, date_finish, barcode, wh_code1):
 
 
 def insert_docs():
-    db.sell_speed.delete_many({'date': "16-05-2023"})
-    db.sell_speed.delete_many({'date': "12-05-2023"})
-    for date1 in ['16-05-2023', '12-05-2023', '11-05-2023', '10-05-2023']:
+    db.sell_speed.delete_many({'date': "17-05-2023"})
+
+    for date1 in ['17-05-2023']:
         data = db.sell_speed.find({"date": '15-05-2023'})
         for data1 in data:
             data1.pop('_id')

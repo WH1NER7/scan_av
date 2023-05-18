@@ -152,4 +152,59 @@ def insert_docs():
             print(data1)
             db.sell_speed.insert_one(data1)
 
-insert_docs()
+# insert_docs()
+
+
+def get_data_for_day():
+    wh_code_list = []
+
+    for day in range(1, 8):
+        date_day_ago = datetime.now() - timedelta(days=day)
+        date_formatted = date_day_ago.strftime('%d-%m-%Y')
+        data = db.sell_speed.find({"date": date_formatted})
+        for data1 in data:
+            wh_code_list.append(data1.get('wh_code'))
+
+    return set(wh_code_list)
+
+
+def get_qnt_arr_daily(date, wh_code2,  barcode):
+    data = db.sell_speed.find_one({"date": date, 'wh_code': wh_code2, 'barcode': barcode})
+    # for data1 in data:
+    #     print(data1)
+    return data.get("quantity")
+
+# print(get_qnt_arr_daily('15-05-2023', 507, 2037280326849))
+
+
+def add_to_db_sell_report(date, barcode, wh_code_num, reg_speed, losed_speed, sum_speed):
+    db.sell_speed_report.insert_one({
+        'upd_date': date,
+        'barcode': barcode,
+        'warehouse_code': wh_code_num,
+        'regular_speed': reg_speed,
+        'losed_speed': losed_speed,
+        'summary_speed': sum_speed
+    })
+
+
+def get_data_sell_speed():
+    json_list = []
+    data = db.sell_speed_report.find({})
+    count_id = 1
+
+    for data1 in data:
+        json_el = {
+            "id": count_id,
+            "barcode": data1.get('barcode'),
+            "warehouse_code": data1.get('warehouse_code'),
+            "regular_speed": data1.get('regular_speed'),
+            "losed_speed": data1.get('losed_speed'),
+            "summary_speed": data1.get('summary_speed'),
+        }
+        count_id += 1
+        json_list.append(json_el)
+
+    return json_list
+
+# get_data_sell_speed()

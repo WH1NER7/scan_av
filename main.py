@@ -1,3 +1,4 @@
+import time
 from datetime import datetime, timedelta
 import os
 import sys
@@ -8,13 +9,12 @@ import pandas as pd
 import openpyxl
 import jinja2
 
-from database.main import insert_todays_doc, add_sell_speed
+from database.main import insert_todays_doc, add_sell_speed, get_data_for_day, get_qnt_arr_daily, add_to_db_sell_report
 from misc.arrays_n_xlsx import columns_names
 from misc.inserter import inserter, get_actual_cards_info, wh_code
 from misc.pathManager import PathManager
 import schedule
 from loguru import logger
-
 
 logger.add("file_1.log", rotation="500 MB")
 logger.add("file_1.log", colorize=True, format="<green>{time}</green> <level>{message}</level>")
@@ -41,7 +41,8 @@ def start_day_sell_speed():
         for item in qty_wh_arr:
             if item[0]:
                 excel_lines.append([item[0], item[1], item[3], item[4], item[2], item[2], 0, 0, 0, 0])
-        columns = ['Склад', 'Баркод', 'Артикул', 'Размер', f'{datetime.now().strftime("%H:%M")}', f'{datetime.now().strftime("%H:%M")}',
+        columns = ['Склад', 'Баркод', 'Артикул', 'Размер', f'{datetime.now().strftime("%H:%M")}',
+                   f'{datetime.now().strftime("%H:%M")}',
                    'Остатки в днях', 'Возвраты', 'Поставки', 'Потенциальная скорость']
         data = pd.DataFrame(excel_lines, columns=columns)
         data.style.format({'Баркод': "{:.2%}"})
@@ -51,7 +52,9 @@ def start_day_sell_speed():
 
 
 def sell_speed():
-    if os.path.isfile(PathManager.get(f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx')) and datetime.now().strftime("%H:%M") > '00:09':
+    if os.path.isfile(PathManager.get(
+            f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx')) and datetime.now().strftime(
+        "%H:%M") > '00:09':
         print('start_sell_speed')
         date_str = datetime.now().strftime("%d-%m-%Y")
         data = pd.read_excel(
@@ -84,10 +87,12 @@ def sell_speed():
                             returns = temp_arr[4:-4][i + 1] - temp_arr[4:-4][i] + returns
                         if temp_arr[4:-4][i] > temp_arr[4:-4][i + 1]:
                             sales = temp_arr[4:-4][i] - temp_arr[4:-4][i + 1] + sales
-                        if temp_arr[4:-4][i] < temp_arr[4:-4][i + 1] and temp_arr[4:-4][i + 1] - temp_arr[4:-4][i] >= 10:
+                        if temp_arr[4:-4][i] < temp_arr[4:-4][i + 1] and temp_arr[4:-4][i + 1] - temp_arr[4:-4][
+                            i] >= 10:
                             supplies = temp_arr[4:-4][i + 1] - temp_arr[4:-4][i] + supplies
                         try:
-                            if temp_arr[4:-4][i] < temp_arr[4:-4][i + 1] and temp_arr[4:-4][i] == 0 and temp_arr[4:-4][i + 1] > 5 and temp_arr[4:-4][i - 1] > 5:
+                            if temp_arr[4:-4][i] < temp_arr[4:-4][i + 1] and temp_arr[4:-4][i] == 0 and temp_arr[4:-4][
+                                i + 1] > 5 and temp_arr[4:-4][i - 1] > 5:
                                 sales = 0
                                 supplies = 0
                         except:
@@ -109,6 +114,58 @@ def sell_speed():
             index=False)
         logger.info(f'Executed at time:{datetime.now()}', value=10)
         print('end')
+
+
+def sell_speed_new_format():
+    data_actual_info_cards = get_actual_cards_info()
+    barcodes = data_actual_info_cards[0]
+    wh_codes = list(get_data_for_day())
+
+    for barcode in barcodes:
+        for wh_code1 in wh_codes:
+            sales_count_list = []
+            for day in [7, 6, 5, 4, 3, 2, 1]:
+                data_day_ago = datetime.now() - timedelta(days=day)
+                new_time = data_day_ago.strftime("%d-%m-%Y")
+                sales = 0
+
+                try:
+                    temp_arr = get_qnt_arr_daily(new_time, wh_code1, barcode)
+                except:
+                    sales_count_list.append(sales)
+                    continue
+
+                for i in range(len(temp_arr) - 1):
+                    if temp_arr[i] > temp_arr[i + 1]:
+                        sales = temp_arr[i] - temp_arr[i + 1] + sales
+                    try:
+                        if temp_arr[i] < temp_arr[i + 1] and temp_arr[i] == 0 and temp_arr[i + 1] > 5 and \
+                                temp_arr[i - 1] > 5:
+                            sales = 0
+                    except:
+                        print('Вынужденный выход за пределы диапазона')
+                sales_count_list.append(sales)
+
+            sales_for_period = sum(sales_count_list)
+
+            try:
+                period_speed = round(sales_for_period / 7, 2)
+            except:
+                period_speed = 0
+            days_without_sales = sales_count_list.count(0)
+            days_with_sales = 7 - days_without_sales
+
+            try:
+                losed_sales_speed = round(sales_for_period / days_with_sales - period_speed, 2)
+            except:
+                losed_sales_speed = 0
+            sum_speed = losed_sales_speed + period_speed
+
+            add_to_db_sell_report(datetime.now().strftime("%d-%m-%Y"), barcode, wh_code1, period_speed, losed_sales_speed, sum_speed)
+            # print(barcode, wh_code1, period_speed, losed_sales_speed, sum_speed)
+
+
+print(sell_speed_new_format())
 
 
 def stat_for_day(time_delta):
@@ -187,8 +244,11 @@ def global_sell_speed():
         summ = sum(data[4:11])
         data[11] = summ / 7
 
-    data = pd.DataFrame(speed_all_barc, columns=['Склад', 'Баркод', 'Артикул', 'Размер', '1', '2', '3', '4', '5', '6', '7', 'Усредненная скорость'])
+    data = pd.DataFrame(speed_all_barc,
+                        columns=['Склад', 'Баркод', 'Артикул', 'Размер', '1', '2', '3', '4', '5', '6', '7',
+                                 'Усредненная скорость'])
     data.to_excel(PathManager.get(f'excels/speed_calc/global_speed.xlsx'), index=False)
+
 
 # print(os.path.isfile(PathManager.get(f'excels/speed_calc/sales_stats_23-02-2023.xlsx')))
 
@@ -281,6 +341,7 @@ def main():
 
     while True:
         schedule.run_pending()
+
 
 # start_day_sell_speed_test()
 

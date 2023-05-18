@@ -332,7 +332,7 @@ def track_qnt():
 def main():
     # schedule.every().day.at('00:00').do(start_day_sell_speed)
     schedule.every().day.at('00:00').do(start_day_sell_speed_test)
-    schedule.every().day.at('00:30').do(sell_speed_new_format)
+    schedule.every().day.at('03:15').do(sell_speed_new_format)
     # schedule.every().day.at('00:04').do(global_sell_speed)
 
     # schedule.every(6).minutes.do(sell_speed)

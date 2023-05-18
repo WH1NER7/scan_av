@@ -344,7 +344,7 @@ def main():
         schedule.run_pending()
 
 
-start_day_sell_speed_test()
+# start_day_sell_speed_test()
 
 
 if __name__ == '__main__':

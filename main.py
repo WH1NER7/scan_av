@@ -124,6 +124,9 @@ def sell_speed_new_format():
     for barcode in barcodes:
         for wh_code1 in wh_codes:
             sales_count_list = []
+
+            period_gaps_sum = 0
+            period_empty_gaps_sum = 0
             for day in [7, 6, 5, 4, 3, 2, 1]:
                 data_day_ago = datetime.now() - timedelta(days=day)
                 new_time = data_day_ago.strftime("%d-%m-%Y")
@@ -135,15 +138,16 @@ def sell_speed_new_format():
                     sales_count_list.append(sales)
                     continue
 
+                period_gaps_sum += len(temp_arr)
+                period_empty_gaps_sum += temp_arr.count(0)
+
                 for i in range(len(temp_arr) - 1):
                     if temp_arr[i] > temp_arr[i + 1]:
                         sales = temp_arr[i] - temp_arr[i + 1] + sales
-                    try:
-                        if temp_arr[i] < temp_arr[i + 1] and temp_arr[i] == 0 and temp_arr[i + 1] > 5 and \
-                                temp_arr[i - 1] > 5:
-                            sales = 0
-                    except:
-                        print('Вынужденный выход за пределы диапазона')
+                    if temp_arr[i] < temp_arr[i + 1] and temp_arr[i] == 0 and temp_arr[i + 1] > 5 and \
+                            temp_arr[i - 1] > 5:
+                        sales = 0
+
                 sales_count_list.append(sales)
 
             sales_for_period = sum(sales_count_list)
@@ -152,20 +156,16 @@ def sell_speed_new_format():
                 period_speed = round(sales_for_period / 7, 2)
             except:
                 period_speed = 0
-            days_without_sales = sales_count_list.count(0)
-            days_with_sales = 7 - days_without_sales
 
             try:
-                losed_sales_speed = round(sales_for_period / days_with_sales - period_speed, 2)
+                losed_sales_speed = round(period_speed / ((period_gaps_sum - period_empty_gaps_sum) / period_gaps_sum) - period_speed, 2)  # s/((n-m)/m)-s
             except:
                 losed_sales_speed = 0
+
             sum_speed = losed_sales_speed + period_speed
 
             add_to_db_sell_report(datetime.now().strftime("%d-%m-%Y"), barcode, wh_code1, period_speed, losed_sales_speed, sum_speed)
-            # print(barcode, wh_code1, period_speed, losed_sales_speed, sum_speed)
-
-
-# print(sell_speed_new_format())
+            print(barcode, wh_code1, period_speed, losed_sales_speed, sum_speed)
 
 
 def stat_for_day(time_delta):

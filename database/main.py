@@ -177,10 +177,12 @@ def get_qnt_arr_daily(date, wh_code2,  barcode):
 # print(get_qnt_arr_daily('15-05-2023', 507, 2037280326849))
 
 
-def add_to_db_sell_report(date, barcode, wh_code_num, reg_speed, losed_speed, sum_speed):
+def add_to_db_sell_report(date, barcode, wh_code_num, reg_speed, losed_speed, sum_speed, article, size):
     db.sell_speed_report.insert_one({
         'upd_date': date,
         'barcode': barcode,
+        'article': article,
+        'size': size,
         'warehouse_code': wh_code_num,
         'regular_speed': reg_speed,
         'losed_speed': losed_speed,
@@ -190,7 +192,7 @@ def add_to_db_sell_report(date, barcode, wh_code_num, reg_speed, losed_speed, su
 
 def get_data_sell_speed():
     json_list = []
-    data = db.sell_speed_report.find({})
+    data = db.sell_speed_report.find({"upd_date": datetime.utcnow().strftime('%d-%m-%Y')})
     count_id = 1
 
     for data1 in data:
@@ -207,4 +209,4 @@ def get_data_sell_speed():
 
     return json_list
 
-# get_data_sell_speed()
+# print(get_data_sell_speed())

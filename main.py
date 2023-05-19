@@ -120,7 +120,8 @@ def sell_speed_new_format():
     data_actual_info_cards = get_actual_cards_info()
     barcodes = data_actual_info_cards[0]
     wh_codes = list(get_data_for_day())
-
+    articles = data_actual_info_cards[1]
+    sizes = data_actual_info_cards[2]
     for barcode in barcodes:
         for wh_code1 in wh_codes:
             sales_count_list = []
@@ -164,10 +165,10 @@ def sell_speed_new_format():
 
             sum_speed = losed_sales_speed + period_speed
 
-            add_to_db_sell_report(datetime.now().strftime("%d-%m-%Y"), barcode, wh_code1, period_speed, losed_sales_speed, sum_speed)
-            print(barcode, wh_code1, period_speed, losed_sales_speed, sum_speed)
+            add_to_db_sell_report(datetime.now().strftime("%d-%m-%Y"), barcode, wh_code1, period_speed, losed_sales_speed, sum_speed, articles[barcodes.index(barcode)], sizes[barcodes.index(barcode)])
+            # print(barcode, wh_code1, period_speed, losed_sales_speed, sum_speed, articles[barcodes.index(barcode)], sizes[barcodes.index(barcode)])
 
-
+# sell_speed_new_format()
 def stat_for_day(time_delta):
     data_day_ago = datetime.now() - timedelta(days=time_delta)
     new_time = data_day_ago.strftime("%d-%m-%Y")

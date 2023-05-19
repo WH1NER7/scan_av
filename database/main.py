@@ -203,6 +203,8 @@ def get_data_sell_speed():
             "regular_speed": data1.get('regular_speed'),
             "losed_speed": data1.get('losed_speed'),
             "summary_speed": data1.get('summary_speed'),
+            'size': data1.get('size'),
+            'article': data1.get('article')
         }
         count_id += 1
         json_list.append(json_el)

@@ -286,7 +286,7 @@ def add_percent_to_sales():
 
 
 def delete_nums():
-    data = db.sell_reports.delete_many({"Date": "25-08-2023"})
+    data = db.sell_reports.delete_many({"Date": "25.08.2023"})
 
 # delete_nums()
 # add_percent_to_sales()

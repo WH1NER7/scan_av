@@ -1,13 +1,16 @@
+import base64
+
 import pandas as pd
 
 
-def transpose_array(arr): # [[1, 2, 3], [1, 2, 3]] => [[1, 1], [2, 2], [3, 3]]
+def transpose_array(arr):  # [[1, 2, 3], [1, 2, 3]] => [[1, 1], [2, 2], [3, 3]]
     result = [None] * len(arr[0])
     for col in range(len(arr[0])):
         result[col] = [None] * len(arr)
         for row in range(len(arr)):
             result[col][row] = arr[row][col]
     return result
+
 
 def read_xlsx(excel_name, columns):  # читает эксель и возвращает numpy array. Columns в виде массива ['col_name','col_name']
     excel_data = pd.read_excel(excel_name, engine="openpyxl")
@@ -26,3 +29,10 @@ def columns_names(columns_count):
 
     columns += columns_hours
     return columns
+
+
+def base64_to_xlsx(response, nameFile): # base64 => xlsx. NameField обычно 'file'
+    decoded_excel = base64.b64decode(response)
+
+    with open(nameFile, "wb") as decoded_file:
+        decoded_file.write(decoded_excel)

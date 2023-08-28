@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 import requests
 
 
@@ -10,3 +12,52 @@ def post_request_spp(url):  # Функция для нахождения зна�
     response.raise_for_status()
     return response.json()
 
+
+def get_fbo_sku(prod_id):
+    headers = {
+        'Client-Id': '1043385',
+        'Api-Key': '48a95b86-26b2-48c6-afd5-309616e8b202',
+        'Content-Length': '63',
+        'Host': 'api-seller.ozon.ru'
+    }
+    data = {
+        "offer_id": "",
+        "product_id": prod_id,
+        "sku": 0
+    }
+    response = requests.post('https://api-seller.ozon.ru/v2/product/info', headers=headers, json=data)
+    response.raise_for_status()
+    return response.json().get('result').get('fbo_sku')
+
+
+def ozon_skus_ozon():
+    headers = {
+        'Client-Id': '1043385',
+        'Api-Key': '48a95b86-26b2-48c6-afd5-309616e8b202',
+        'Content-Length': '84',
+        'Host': 'api-seller.ozon.ru'
+    }
+    data = {
+        "filter": {
+            "visibility": "ALL"
+        },
+        "last_id": "",
+        "limit": 1000
+    }
+    response = requests.post('https://api-seller.ozon.ru/v2/product/list', headers=headers, json=data)
+    response.raise_for_status()
+
+    data_arr = []
+
+    for item in response.json().get('result').get('items'):
+        data_arr.append({
+            "product_id": item.get('product_id'),
+            "offer_id": item.get('offer_id'),
+            "fbo_sku": get_fbo_sku(item.get('product_id')),
+            "is_archived": item.get('archived')
+        })
+
+    return data_arr
+
+
+# print(ozon_skus_ozon())

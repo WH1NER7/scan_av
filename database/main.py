@@ -45,6 +45,7 @@ def add_all_old_reports_to_db():
         except Exception as e:
             print(e)
 
+
 def add_all_old_reports_to_db_new_format():
     for day in range(1, 13):
         try:
@@ -212,3 +213,80 @@ def get_data_sell_speed():
     return json_list
 
 # print(get_data_sell_speed())
+
+
+def sell_data_by_period(date_start, date_finish):
+    new_time = date_start
+    json_arr_to_return = []
+    while datetime.strptime(date_finish, "%d-%m-%Y") != datetime.strptime(new_time, "%d-%m-%Y"):
+        data = db.sell_speed.find({"date": new_time})
+        for doc in data:
+            try:
+                barcode = doc.get('barcode')
+                wh_code = doc.get('wh_code')
+                asked_date = datetime.strptime(new_time, "%d-%m-%Y")
+                last_qnt = doc.get('quantity')[len(doc.get('quantity')) - 1]
+                date = datetime.strptime(new_time, "%d-%m-%Y") + timedelta(days=1)
+                date_str = date.strftime("%d-%m-%Y")
+                day_summary = db.sell_speed_report.find_one({"barcode": barcode, "warehouse_code": wh_code, "upd_date": date_str})
+                nice_day_summary = {
+                    'barcode': barcode,
+                    'warehouse_code': wh_code,
+                    'regular_speed': day_summary.get('regular_speed'),
+                    'losed_speed': day_summary.get('losed_speed'),
+                    'summary_speed': day_summary.get('summary_speed'),
+                    'asked_date': asked_date.strftime("%d-%m-%Y"),
+                    'last_tracked_qnt': last_qnt
+                }
+                json_arr_to_return.append(nice_day_summary)
+            except Exception as e:
+                # print(e)
+                pass
+
+        data_some_days_ago = datetime.strptime(new_time, "%d-%m-%Y") - timedelta(days=1)
+        new_time = data_some_days_ago.strftime("%d-%m-%Y")
+        if datetime.strptime(new_time, "%d-%m-%Y") < datetime.strptime(date_finish, "%d-%m-%Y"):
+            break
+
+    return json_arr_to_return
+
+
+def get_wb_sup_tokens(company_name):
+    tokens_arr = db.companys.find_one({'company_name': company_name}).get('tokens')
+    sup_token = tokens_arr[0].get('suplier_token')
+    wb_token = tokens_arr[0].get('wb_token')
+    return f'WBToken={wb_token}; x-supplier-id={sup_token};'
+
+
+def add_doc_to_fin_rep(columns, data, date):
+    item = {"Date": date}
+    counter = 0
+    for feature in columns:
+        try:
+            item[feature] = data[counter]
+            counter += 1
+        except Exception as e:
+            print(e)
+    db.sell_reports.insert_one(item)
+
+
+def get_sell_speed_report_data():
+    return db.sell_speed.find({"date": '03-08-2023'})
+
+
+def insert_sell_speed_report_data(data):
+    db.sell_speed.insert_one(data)
+
+
+def add_percent_to_sales():
+    data = db.sell_speed_report.find({"upd_date": "15-08-2023"})
+    for doc in data:
+        speed = int(doc.get('regular_speed')) * 1.2
+        db.sell_speed_report.update_one({"upd_date": "15-08-2023", '_id': doc.get('_id')}, {"$set": {"regular_speed": speed}})
+
+
+def delete_nums():
+    data = db.sell_reports.delete_many({"Date": "25-08-2023"})
+
+# delete_nums()
+# add_percent_to_sales()

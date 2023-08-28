@@ -9,7 +9,8 @@ import pandas as pd
 import openpyxl
 import jinja2
 
-from database.main import insert_todays_doc, add_sell_speed, get_data_for_day, get_qnt_arr_daily, add_to_db_sell_report
+from database.main import insert_todays_doc, add_sell_speed, get_data_for_day, get_qnt_arr_daily, add_to_db_sell_report, \
+    get_sell_speed_report_data, insert_sell_speed_report_data, add_percent_to_sales, delete_nums
 from misc.arrays_n_xlsx import columns_names
 from misc.inserter import inserter, get_actual_cards_info, wh_code
 from misc.pathManager import PathManager
@@ -53,8 +54,7 @@ def start_day_sell_speed():
 
 def sell_speed():
     if os.path.isfile(PathManager.get(
-            f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx')) and datetime.now().strftime(
-        "%H:%M") > '00:09':
+            f'excels/speed_calc/sales_stats_{datetime.now().strftime("%d-%m-%Y")}.xlsx')) and datetime.now().strftime("%H:%M") > '00:09':
         print('start_sell_speed')
         date_str = datetime.now().strftime("%d-%m-%Y")
         data = pd.read_excel(
@@ -91,8 +91,7 @@ def sell_speed():
                             i] >= 10:
                             supplies = temp_arr[4:-4][i + 1] - temp_arr[4:-4][i] + supplies
                         try:
-                            if temp_arr[4:-4][i] < temp_arr[4:-4][i + 1] and temp_arr[4:-4][i] == 0 and temp_arr[4:-4][
-                                i + 1] > 5 and temp_arr[4:-4][i - 1] > 5:
+                            if temp_arr[4:-4][i] < temp_arr[4:-4][i + 1] and temp_arr[4:-4][i] == 0 and temp_arr[4:-4][i + 1] > 5 and temp_arr[4:-4][i - 1] > 5:
                                 sales = 0
                                 supplies = 0
                         except:
@@ -117,9 +116,12 @@ def sell_speed():
 
 
 def sell_speed_new_format():
+    print('start sell speed')
     data_actual_info_cards = get_actual_cards_info()
+
     barcodes = data_actual_info_cards[0]
     wh_codes = list(get_data_for_day())
+
     articles = data_actual_info_cards[1]
     sizes = data_actual_info_cards[2]
     for barcode in barcodes:
@@ -330,6 +332,16 @@ def track_qnt():
         pass
 
 
+def fix_bad_data():
+    for date_filler in ['14-08-2023', '13-08-2023', '12-08-2023', '11-08-2023', '10-08-2023', '09-08-2023', '08-08-2023', '07-08-2023', '06-08-2023', '05-08-2023']:
+        data = get_sell_speed_report_data()
+        for doc in data:
+            doc.pop('_id')
+            doc['date'] = date_filler
+            insert_sell_speed_report_data(doc)
+# fix_bad_data()
+
+
 def main():
     # schedule.every().day.at('00:00').do(start_day_sell_speed)
     schedule.every().day.at('00:00').do(start_day_sell_speed_test)
@@ -345,8 +357,9 @@ def main():
         schedule.run_pending()
 
 
+delete_nums()
 # start_day_sell_speed_test()
-
+# sell_speed_new_format()
 
 if __name__ == '__main__':
     main()

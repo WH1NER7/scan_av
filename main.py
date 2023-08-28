@@ -17,6 +17,8 @@ from misc.pathManager import PathManager
 import schedule
 from loguru import logger
 
+from misc.wb_sell_req import req_download_all_reports
+
 logger.add("file_1.log", rotation="500 MB")
 logger.add("file_1.log", colorize=True, format="<green>{time}</green> <level>{message}</level>")
 logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>")
@@ -346,6 +348,7 @@ def main():
     # schedule.every().day.at('00:00').do(start_day_sell_speed)
     schedule.every().day.at('00:00').do(start_day_sell_speed_test)
     schedule.every().day.at('03:15').do(sell_speed_new_format)
+    schedule.every().day.at('05:15').do(req_download_all_reports)
     # schedule.every().day.at('00:04').do(global_sell_speed)
 
     # schedule.every(6).minutes.do(sell_speed)
@@ -357,7 +360,7 @@ def main():
         schedule.run_pending()
 
 
-delete_nums()
+# delete_nums()
 # start_day_sell_speed_test()
 # sell_speed_new_format()
 

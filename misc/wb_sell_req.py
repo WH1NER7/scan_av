@@ -62,15 +62,45 @@ def delete_wb_report(url_req, company_name):
 
 
 def req_download_all_reports():
-    date_str = datetime.datetime.now().strftime("%d-%m-%Y")
-
-    # date_start = '25.08.23'
-    # date_finish = '26.08.23'
+    date_str = datetime.datetime.now().strftime("%d.%m.%y")
 
     new_time = date_str
 
-    # while datetime.datetime.strptime(date_finish, "%d.%m.%y") != datetime.datetime.strptime(new_time, "%d.%m.%y"):
     for company in ['MissYourKiss', 'Bonasita']:
+        url = wb_sell_report_by_date(new_time, company)
+        time.sleep(3)
+
+        nice_url = "https://seller.wildberries.ru/ns/reportsviewer/analytics-back/api/report/supplier-goods/xlsx/" + str(
+            url)
+        decoded_excel = download_wb_report(nice_url, company)
+        base64_to_xlsx(decoded_excel, PathManager.get(f'excels/sell_reports/{new_time}.xlsx'))
+
+        delete_url = 'https://seller.wildberries.ru/ns/reportsviewer/analytics-back/api/report/supplier-goods/order/' + str(
+            url)
+
+        excel_data_df = pd.read_excel(PathManager.get(f'excels/sell_reports/{new_time}.xlsx'), engine='openpyxl')
+        excel_data_df = excel_data_df.iloc[1:len(excel_data_df) - 1]
+        columns = ['Brand', 'item', 'season', 'collection', 'name', 'seller_article', 'wb_article', 'barcode', 'size',
+                   'contract', 'wh_name', 'income_pcs', 'ordered_pcs', 'order_sum', 'buyback_pcs', 'transfer_money',
+                   'wh_limits']
+        for line in excel_data_df.to_numpy():
+            add_doc_to_fin_rep(columns, line, new_time)
+
+        delete_wb_report(delete_url, company)
+
+    return f'download report for company {company}, date: {new_time}'
+
+
+def download_report_by_selected_date(company):
+    # date_str = datetime.datetime.now().strftime("%d-%m-%Y")
+
+    date_start = '01.09.23'
+    date_finish = '04.09.23'
+
+    new_time = date_start
+
+    while datetime.datetime.strptime(date_finish, "%d.%m.%y") != datetime.datetime.strptime(new_time, "%d.%m.%y"):
+        # for company in ['MissYourKiss', 'Bonasita']:
         print(new_time)
         url = wb_sell_report_by_date(new_time, company)
         print(url)
@@ -89,12 +119,12 @@ def req_download_all_reports():
 
         delete_wb_report(delete_url, company)
 
-        # data_some_days_ago = datetime.datetime.strptime(new_time, "%d.%m.%y") + datetime.timedelta(days=1)
-        # new_time = data_some_days_ago.strftime("%d.%m.%y")
-        # if datetime.datetime.strptime(new_time, "%d.%m.%y") > datetime.datetime.strptime(date_finish, "%d.%m.%y"):
-        #     break
+        data_some_days_ago = datetime.datetime.strptime(new_time, "%d.%m.%y") + datetime.timedelta(days=1)
+        new_time = data_some_days_ago.strftime("%d.%m.%y")
+        if datetime.datetime.strptime(new_time, "%d.%m.%y") > datetime.datetime.strptime(date_finish, "%d.%m.%y"):
+            break
 
     return 'goooood'
 
 
-# req_download_all_reports('MissYourKiss')
+# download_report_by_selected_date('Bonasita')

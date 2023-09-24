@@ -62,7 +62,8 @@ def delete_wb_report(url_req, company_name):
 
 
 def req_download_all_reports():
-    date_str = datetime.datetime.now().strftime("%d.%m.%y")
+    date_yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+    date_str = date_yesterday.strftime("%d.%m.%y")
 
     new_time = date_str
 
@@ -78,7 +79,7 @@ def req_download_all_reports():
         delete_url = 'https://seller.wildberries.ru/ns/reportsviewer/analytics-back/api/report/supplier-goods/order/' + str(
             url)
 
-        excel_data_df = pd.read_excel(PathManager.get(f'excels/sell_reports/{new_time}.xlsx'), engine='openpyxl')
+        excel_data_df = pd.read_excel(PathManager.get(f'excels/sell_reports/{new_time}.xlsx'), engine="openpyxl")
         excel_data_df = excel_data_df.iloc[1:len(excel_data_df) - 1]
         columns = ['Brand', 'item', 'season', 'collection', 'name', 'seller_article', 'wb_article', 'barcode', 'size',
                    'contract', 'wh_name', 'income_pcs', 'ordered_pcs', 'order_sum', 'buyback_pcs', 'transfer_money',

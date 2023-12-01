@@ -95,8 +95,8 @@ def req_download_all_reports():
 def download_report_by_selected_date(company):
     # date_str = datetime.datetime.now().strftime("%d-%m-%Y")
 
-    date_start = '01.09.23'
-    date_finish = '04.09.23'
+    date_start = '27.10.23'
+    date_finish = '28.10.23'
 
     new_time = date_start
 
@@ -128,4 +128,4 @@ def download_report_by_selected_date(company):
     return 'goooood'
 
 
-# download_report_by_selected_date('Bonasita')
+# download_report_by_selected_date('MissYourKiss')

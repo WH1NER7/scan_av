@@ -8,9 +8,11 @@ import pandas as pd
 
 import openpyxl
 import jinja2
+import requests
 
 from database.main import insert_todays_doc, add_sell_speed, get_data_for_day, get_qnt_arr_daily, add_to_db_sell_report, \
-    get_sell_speed_report_data, insert_sell_speed_report_data, add_percent_to_sales, delete_nums
+    get_sell_speed_report_data, insert_sell_speed_report_data, add_percent_to_sales, delete_nums, \
+    delete_sell_speed_nums, db, transform_and_insert_to_mongo
 from misc.arrays_n_xlsx import columns_names
 from misc.inserter import inserter, get_actual_cards_info, wh_code
 from misc.pathManager import PathManager
@@ -126,6 +128,7 @@ def sell_speed_new_format():
 
     articles = data_actual_info_cards[1]
     sizes = data_actual_info_cards[2]
+    companys = data_actual_info_cards[3]
     for barcode in barcodes:
         for wh_code1 in wh_codes:
             sales_count_list = []
@@ -169,10 +172,22 @@ def sell_speed_new_format():
 
             sum_speed = losed_sales_speed + period_speed
 
-            add_to_db_sell_report(datetime.now().strftime("%d-%m-%Y"), barcode, wh_code1, period_speed, losed_sales_speed, sum_speed, articles[barcodes.index(barcode)], sizes[barcodes.index(barcode)])
+            existing_record = db.sell_speed_report.find_one({
+                "upd_date": datetime.now().strftime("%d-%m-%Y"),
+                "barcode": barcode,
+                "warehouse_code": wh_code1
+            })
+
+            if not existing_record:
+                # Если записи не существует, добавляем новую
+                add_to_db_sell_report(datetime.now().strftime("%d-%m-%Y"), barcode, wh_code1, period_speed,
+                                      losed_sales_speed, sum_speed, articles[barcodes.index(barcode)],
+                                      sizes[barcodes.index(barcode)], companys[barcodes.index(barcode)])
             # print(barcode, wh_code1, period_speed, losed_sales_speed, sum_speed, articles[barcodes.index(barcode)], sizes[barcodes.index(barcode)])
 
 # sell_speed_new_format()
+
+
 def stat_for_day(time_delta):
     data_day_ago = datetime.now() - timedelta(days=time_delta)
     new_time = data_day_ago.strftime("%d-%m-%Y")
@@ -304,7 +319,7 @@ def insert_qnt_on_wh():
     data = inserter()
 
     for qnt_on_wh in data:
-        insert_todays_doc(qnt_on_wh[1], qnt_on_wh[2], qnt_on_wh[0], qnt_on_wh[3], qnt_on_wh[4])
+        insert_todays_doc(qnt_on_wh[1], qnt_on_wh[2], qnt_on_wh[0], qnt_on_wh[3], qnt_on_wh[4], qnt_on_wh[5])
         print(qnt_on_wh)
 
 
@@ -313,7 +328,7 @@ def upd_qnt(date):
     try:
         for qnt_on_wh in data:
             try:
-                add_sell_speed(qnt_on_wh[1], qnt_on_wh[2], qnt_on_wh[0], date)
+                add_sell_speed(qnt_on_wh[1], qnt_on_wh[2], qnt_on_wh[0], date, qnt_on_wh[5])
             except:
                 pass
             # print(qnt_on_wh)
@@ -335,13 +350,45 @@ def track_qnt():
 
 
 def fix_bad_data():
-    for date_filler in ['14-08-2023', '13-08-2023', '12-08-2023', '11-08-2023', '10-08-2023', '09-08-2023', '08-08-2023', '07-08-2023', '06-08-2023', '05-08-2023']:
+    for date_filler in ['16-09-2023', '17-09-2023', '18-09-2023']:
         data = get_sell_speed_report_data()
         for doc in data:
             doc.pop('_id')
             doc['date'] = date_filler
             insert_sell_speed_report_data(doc)
 # fix_bad_data()
+######################################### и функцию из database\main.py
+
+def get_data_from_api():
+    # Получение текущей даты и даты две недели назад
+    today = datetime.now().strftime('%Y-%m-%d')
+    two_weeks_ago = (datetime.now() - timedelta(days=14)).strftime('%Y-%m-%d')
+
+    # Формирование URL для запроса
+    url = f'https://statistics-api.wildberries.ru/api/v1/supplier/reportDetailByPeriod?dateFrom={two_weeks_ago}&dateTo={today}'
+
+    headers ={
+        "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NJRCI6IjAzM2IwNDlhLWQ2NDktNDA5ZS1hNmY4LTI0NWUxNGZmZmRkNCJ9.3c5GHGArH1ZHf5Bl1r7vQJ2zKwYuSe2KlHClNxaefFs"
+    }
+    # Выполнение запроса к API Wildberries
+    response = requests.get(url=url, headers=headers)
+
+    # Проверка успешности запроса
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f'Error {response.status_code} while fetching data from the API.')
+        return None
+
+
+def api_fin_rep_to_mongo():
+    # Замените 'your_database_name' и 'fin_reports' на соответствующие значения
+    api_data = get_data_from_api()
+    if api_data:
+        mongo_mapping = {'rrd_id': 'no', 'gi_id': 'delivery_number', 'subject_name': 'item', 'nm_id': 'nomenclature_code', 'brand_name': 'brand', 'sa_name': 'provider_article', 'add_name': 'name', 'ts_name': 'size', 'barcode': 'barcode', 'doc_type_name': 'type_document', 'supplier_oper_name': 'justification_for_payment', 'order_dt': 'date_buyer_order', 'sale_dt': 'sales_date', 'quantity': 'amount', 'retail_price': 'retail_price', 'retail_amount': 'wb_sold_goods', 'product_discount_for_report': 'coordinated_discount', 'supplier_promo': 'promocode', 'sale_percent': 'final_discount', 'retail_price_withdisc_rub': 'retail_price_with_discount', 'sup_rating_prc_up': 'kvv downgrade, because of rating', 'is_kgvp_v2': 'kvv downgrade, because of sales', 'ppvz_spp_prc': 'buyer_discount', 'commission_percent': 'kvv', 'ppvz_kvw_prc_base': 'kvv_without_NDS', 'ppvz_kvw_prc': 'final_kvv', 'ppvz_sales_commission': 'remuneration', 'ppvz_reward': 'compensation', 'acquiring_fee': 'equiring payment', 'ppvz_vw': 'remuneration_WB', 'ppvz_vw_nds': 'NDS_rewards_WB', 'ppvz_for_pay': 'transfer_of_seller', 'delivery_amount': 'num_delivery', 'return_amount': 'num_return', 'delivery_rub': 'delivery_services', 'penalty': 'total_amount_of_fines', 'additional_payment': 'surcharges', 'logistics_payments_species': 'logistic_type', 'sticker_id': 'sticker_mp', 'acquiring_bank': 'name bank equiring', 'ppvz_office_id': 'office_number', 'ppvz_office_name': 'name_delivery_office', 'ppvz_inn': 'INN_partner', 'ppvz_supplier_name': 'partner', 'office_name': 'warehouse', 'site_country': 'country', 'gi_box_type_name': 'type_of_boxes', 'declaration_number': 'num_customs_declaration', 'kiz': 'markup code', 'shk_id': 'shk', 'rid': 'rid', 'srid': 'Srid', 'rebill_logistic_cost': 'transport payment', 'rebill_logistic_org': 'transport organizer'}
+        transform_and_insert_to_mongo(api_data[0], mongo_mapping)
+
+###############################################################
 
 
 def main():
@@ -349,6 +396,7 @@ def main():
     schedule.every().day.at('00:00').do(start_day_sell_speed_test)
     schedule.every().day.at('03:15').do(sell_speed_new_format)
     schedule.every().day.at('05:15').do(req_download_all_reports)
+    schedule.every().day.at('05:45').do(api_fin_rep_to_mongo) #########################
     # schedule.every().day.at('00:04').do(global_sell_speed)
 
     # schedule.every(6).minutes.do(sell_speed)
@@ -360,9 +408,11 @@ def main():
         schedule.run_pending()
 
 
-# delete_nums()
-# start_day_sell_speed_test()
+
+
+start_day_sell_speed_test()
 # sell_speed_new_format()
+
 
 if __name__ == '__main__':
     main()

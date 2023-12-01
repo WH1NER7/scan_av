@@ -79,7 +79,7 @@ def insert_any_day_doc(barcode, qnt, wh_code_number, article, size, date):
     db.sell_speed.insert_one(speed_data)
 
 
-def insert_todays_doc(barcode, qnt, wh_code, article, size):
+def insert_todays_doc(barcode, qnt, wh_code, article, size, company):
     speed_data = {
         "date": datetime.now().strftime('%d-%m-%Y'),
         "quantity": [qnt],
@@ -87,13 +87,40 @@ def insert_todays_doc(barcode, qnt, wh_code, article, size):
         "article": article,
         "size": size,
         "wh_code": wh_code,
+        "company": company,
         'time_stamps': [datetime.now().strftime("%H:%M")]
     }
     db.sell_speed.insert_one(speed_data)
 
 
-def add_sell_speed(barcode, qnt, wh_code_param, date):
-    db.sell_speed.update_one({"barcode": barcode, "wh_code": wh_code_param, "date": date}, {"$push": {"quantity": qnt, 'time_stamps': datetime.now().strftime("%H:%M")}})
+def add_sell_speed(barcode, qnt, wh_code_param, date, company):
+    try:
+        # Находим или создаем документ для данной комбинации date, barcode, wh_code
+        existing_record = db.sell_speed.find_one({
+            "date": date,
+            "barcode": barcode,
+            "wh_code": wh_code_param
+        })
+
+        if existing_record:
+            # Если документ уже существует, обновляем его
+            db.sell_speed.update_one(
+                {"_id": existing_record["_id"]},
+                {"$push": {"quantity": qnt, 'time_stamps': datetime.now().strftime("%H:%M")}}
+            )
+        else:
+            # Если документ не существует, создаем новый
+            new_record = {
+                "date": date,
+                "quantity": [qnt],
+                "barcode": barcode,
+                "wh_code": wh_code_param,
+                "company": company,
+                "time_stamps": [datetime.now().strftime("%H:%M")]
+            }
+            db.sell_speed.insert_one(new_record)
+    except Exception as e:
+        print(f"Error: {e}")
 
 
 def find_qnt_track(date, barcode, wh_code_num):
@@ -178,7 +205,7 @@ def get_qnt_arr_daily(date, wh_code2,  barcode):
 # print(get_qnt_arr_daily('15-05-2023', 507, 2037280326849))
 
 
-def add_to_db_sell_report(date, barcode, wh_code_num, reg_speed, losed_speed, sum_speed, article, size):
+def add_to_db_sell_report(date, barcode, wh_code_num, reg_speed, losed_speed, sum_speed, article, size, company):
     db.sell_speed_report.insert_one({
         'upd_date': date,
         'barcode': barcode,
@@ -187,7 +214,8 @@ def add_to_db_sell_report(date, barcode, wh_code_num, reg_speed, losed_speed, su
         'warehouse_code': wh_code_num,
         'regular_speed': reg_speed,
         'losed_speed': losed_speed,
-        'summary_speed': sum_speed
+        'summary_speed': sum_speed,
+        'company': company
     })
 
 
@@ -271,11 +299,24 @@ def add_doc_to_fin_rep(columns, data, date):
 
 
 def get_sell_speed_report_data():
-    return db.sell_speed.find({"date": '03-08-2023'})
+    return db.sell_speed.find({"date": '15-09-2023'})
 
 
 def insert_sell_speed_report_data(data):
     db.sell_speed.insert_one(data)
+
+
+def transform_and_insert_to_mongo(api_data, mongo_mapping):
+    # Переименование ключей в соответствии с заданным соответствием
+    renamed_data = {mongo_mapping[key]: api_data[key] for key in api_data if key in mongo_mapping}
+
+    # Проверка уникальности записи в коллекции
+    if not db.fin_reports.find_one({'srid': renamed_data['Srid'], 'justification_for_payment': renamed_data['justification_for_payment']}):
+        # Вставка данных в коллекцию
+        db.fin_reports.insert_one(renamed_data)
+        print('Data inserted successfully.')
+    else:
+        print('Data already exists in the collection.')
 
 
 def add_percent_to_sales():
@@ -287,8 +328,52 @@ def add_percent_to_sales():
 
 def delete_nums():
     data = db.sell_reports.delete_many({
-    'Date': '25.08.23'
-})
+    'Date': '15.09.23'
+    })
 
-# delete_nums()
+
+def delete_sell_speed_nums():
+    data = db.sell_reports.delete_many({
+        'Date': '09.10.23'
+    })
+
+# delete_sell_speed_nums()
 # add_percent_to_sales()
+
+def delete_duplicates():
+    pipeline = [
+        {
+            '$match': {
+                'Date': '09.10.23'
+            }
+        },
+        {
+            '$group': {
+                '_id': {'barcode': '$barcode', 'warehouse_code': '$warehouse_code'},
+                'count': {'$sum': 1},
+                'duplicates': {'$push': '$_id'}
+            }
+        },
+        {
+            '$match': {
+                'count': {'$gt': 1}
+            }
+        }
+    ]
+
+    duplicates = list(db.sell_speed_report.aggregate(pipeline))
+
+    # Удалить дубликаты
+    for duplicate in duplicates:
+        duplicate_ids = duplicate['duplicates'][1:]  # Оставляем один документ, удаляем остальные
+        db.sell_speed_report.delete_many({'_id': {'$in': duplicate_ids}})
+
+# data = (db.sell_reports.find({}))
+# money = 0
+# for data1 in data:
+#     money += int(data1.get('transfer_money'))
+#     print(data1)
+# print(money)
+
+
+# delete_duplicates()
